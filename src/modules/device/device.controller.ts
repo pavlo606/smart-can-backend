@@ -19,6 +19,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.enum';
+import { CurrentUser } from '@/common/decorators/current-user';
+import type { JwtPayload } from '@/types/jwt-payload';
 
 @ApiTags('Device')
 @Controller('device')
@@ -38,16 +40,16 @@ export class DeviceController {
   @ApiOperation({ summary: 'Get many devices with search and pagination' })
   @ApiResponse({ status: 200, description: 'Returns devices data' })
   @Get()
-  async getAll(@Query() query: QueryDeviceDto) {
-    return this.service.getMany(query);
+  async getAll(@Query() query: QueryDeviceDto, @CurrentUser() user: JwtPayload) {
+    return this.service.getMany(query, user.userId);
   }
 
   @ApiOperation({ summary: 'Get device by id' })
   @ApiResponse({ status: 200, description: 'Returns device data' })
   @ApiResponse({ status: 404, description: 'No such device' })
   @Get(':id')
-  async getById(@Param('id') id: string) {
-    return this.service.getById(id);
+  async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.service.getById(id, user.userId);
   }
 
   @ApiOperation({ summary: 'Update device' })
@@ -55,15 +57,15 @@ export class DeviceController {
   @ApiResponse({ status: 400, description: 'Invalid body data' })
   @ApiResponse({ status: 404, description: 'No such device' })
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateDeviceDto) {
-    return this.service.update(id, dto);
+  async update(@Param('id') id: string, @Body() dto: UpdateDeviceDto, @CurrentUser() user: JwtPayload) {
+    return this.service.update(id, dto, user.userId);
   }
 
   @ApiOperation({ summary: 'Delete device' })
   @ApiResponse({ status: 200, description: 'Deleted successfuly' })
   @ApiResponse({ status: 404, description: 'No such device' })
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.service.delete(id);
+  async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.service.delete(id, user.userId);
   }
 }

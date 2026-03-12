@@ -15,11 +15,12 @@ export class DeviceService {
     });
   }
 
-  async getMany(query: QueryDeviceDto) {
+  async getMany(query: QueryDeviceDto, userId: string) {
     const where: Prisma.DeviceWhereInput = {
       ...(query.search && {
         OR: [{ imei: { contains: query.search } }],
       }),
+      vehicle: { userId },
     };
 
     const skip = (query.page - 1) * query.limit;
@@ -46,17 +47,17 @@ export class DeviceService {
     };
   }
 
-  async getById(id: string) {
-    return this.repo.getById(id);
+  async getById(id: string, userId: string) {
+    return this.repo.getById(id, userId);
   }
 
-  async update(id: string, data: UpdateDeviceDto) {
-    return this.repo.update(id, data);
+  async update(id: string, data: UpdateDeviceDto, userId: string) {
+    return this.repo.update(id, data, userId);
   }
 
-  async delete(id: string) {
+  async delete(id: string, userId: string) {
     try {
-      return await this.repo.delete(id);
+      return await this.repo.delete(id, userId);
     } catch (err) {
       if (err.cause && err.cause.code === '23001') {
         throw new BadRequestException(

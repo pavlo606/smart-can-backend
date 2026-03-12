@@ -10,12 +10,18 @@ export class DeviceRepository {
     return this.prisma.device.create({ data });
   }
 
-  async getMany(where: Prisma.DeviceWhereInput, orderBy: Prisma.DeviceOrderByWithAggregationInput, skip: number, take: number) {
+  async getMany(
+    where: Prisma.DeviceWhereInput,
+    orderBy: Prisma.DeviceOrderByWithAggregationInput,
+    skip: number,
+    take: number,
+  ) {
     return this.prisma.device.findMany({
       where,
       skip,
       take,
       orderBy,
+      include: { vehicle: true },
     });
   }
 
@@ -23,17 +29,21 @@ export class DeviceRepository {
     return this.prisma.device.count({ where });
   }
 
-  async getById(id: string) {
+  async getById(id: string, userId: string) {
     return this.prisma.device.findUniqueOrThrow({
-      where: { id },
+      where: { id, vehicle: { userId } },
+      include: { vehicle: true },
     });
   }
 
-  async update(id: string, data: Prisma.DeviceUpdateInput) {
-    return this.prisma.device.update({ where: { id }, data });
+  async update(id: string, data: Prisma.DeviceUpdateInput, userId: string) {
+    return this.prisma.device.update({
+      where: { id, vehicle: { userId } },
+      data,
+    });
   }
 
-  async delete(id: string) {
-    return this.prisma.device.delete({ where: { id } });
+  async delete(id: string, userId: string) {
+    return this.prisma.device.delete({ where: { id, vehicle: { userId } } });
   }
 }

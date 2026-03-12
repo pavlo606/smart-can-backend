@@ -14,14 +14,15 @@ export class VehicleService {
       ...dto,
       user: {
         connect: {
-          id: userId
-        }
+          id: userId,
+        },
       },
     });
   }
 
-  async getMany(query: QueryVehicleDto) {
+  async getMany(query: QueryVehicleDto, userId: string) {
     const where: Prisma.VehicleWhereInput = {
+      userId,
       ...(query.search && {
         OR: [{ name: { contains: query.search, mode: 'insensitive' } }],
       }),
@@ -51,17 +52,17 @@ export class VehicleService {
     };
   }
 
-  async getById(id: string) {
-    return this.repo.getById(id);
+  async getById(id: string, userId: string) {
+    return this.repo.getById(id, userId);
   }
 
-  async update(id: string, data: UpdateVehicleDto) {
-    return this.repo.update(id, data);
+  async update(id: string, data: UpdateVehicleDto, userId: string) {
+    return this.repo.update(id, data, userId);
   }
 
-  async delete(id: string) {
+  async delete(id: string, userId: string) {
     try {
-      return await this.repo.delete(id);
+      return await this.repo.delete(id, userId);
     } catch (err) {
       if (err.cause && err.cause.code === '23001') {
         throw new BadRequestException(

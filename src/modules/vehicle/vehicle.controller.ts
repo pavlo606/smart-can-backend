@@ -40,16 +40,16 @@ export class VehicleController {
   @ApiOperation({ summary: 'Get many vehicles with search and pagination' })
   @ApiResponse({ status: 200, description: 'Returns vehicles data' })
   @Get()
-  async getAll(@Query() query: QueryVehicleDto) {
-    return this.service.getMany(query);
+  async getAll(@Query() query: QueryVehicleDto, @CurrentUser() user: JwtPayload) {
+    return this.service.getMany(query, user.userId);
   }
 
   @ApiOperation({ summary: 'Get vehicle by id' })
   @ApiResponse({ status: 200, description: 'Returns vehicle data' })
   @ApiResponse({ status: 404, description: 'No such vehicle' })
   @Get(':id')
-  async getById(@Param('id') id: string) {
-    return this.service.getById(id);
+  async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.service.getById(id, user.userId);
   }
 
   @ApiOperation({ summary: 'Update vehicle' })
@@ -57,15 +57,15 @@ export class VehicleController {
   @ApiResponse({ status: 400, description: 'Invalid body data' })
   @ApiResponse({ status: 404, description: 'No such vehicle' })
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateVehicleDto) {
-    return this.service.update(id, dto);
+  async update(@Param('id') id: string, @Body() dto: UpdateVehicleDto, @CurrentUser() user: JwtPayload) {
+    return this.service.update(id, dto, user.userId);
   }
 
   @ApiOperation({ summary: 'Delete vehicle' })
   @ApiResponse({ status: 200, description: 'Deleted successfuly' })
   @ApiResponse({ status: 404, description: 'No such vehicle' })
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.service.delete(id);
+  async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.service.delete(id, user.userId);
   }
 }

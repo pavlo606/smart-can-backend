@@ -16,6 +16,7 @@ export class VehicleRepository {
       skip,
       take,
       orderBy,
+      include: { devices: true }
     });
   }
 
@@ -23,17 +24,18 @@ export class VehicleRepository {
     return this.prisma.vehicle.count({ where });
   }
 
-  async getById(id: string) {
+  async getById(id: string, userId: string) {
     return this.prisma.vehicle.findUniqueOrThrow({
       where: { id },
+      include: { devices: true }
     });
   }
 
-  async update(id: string, data: Prisma.VehicleUpdateInput) {
+  async update(id: string, data: Prisma.VehicleUpdateInput, userId: string) {
     return this.prisma.vehicle.update({ where: { id }, data });
   }
 
-  async delete(id: string) {
+  async delete(id: string, userId: string) {
     return this.prisma.vehicle.delete({ where: { id } });
   }
 }
