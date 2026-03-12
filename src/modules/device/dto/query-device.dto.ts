@@ -1,9 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
-import { VehicleSortField } from './sort-vehicle.dto';
+import { DeviceSortField } from './sort-device.dto';
 
-export class QueryVehicleDto {
+export class QueryDeviceDto {
   @ApiPropertyOptional({
     type: String,
     description: 'Search query',
@@ -41,8 +41,8 @@ export class QueryVehicleDto {
     required: false,
   })
   @IsOptional()
-  @IsEnum(VehicleSortField)
-  sortBy: VehicleSortField;
+  @IsEnum(DeviceSortField)
+  sortBy: DeviceSortField;
 
   @ApiPropertyOptional({
     type: String,

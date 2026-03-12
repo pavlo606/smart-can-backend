@@ -49,3 +49,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type Vehicle = Prisma.VehicleModel
+/**
+ * Model Device
+ * 
+ */
+export type Device = Prisma.DeviceModel

@@ -1,35 +1,30 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { VehicleRepository } from './vehicle.repository';
-import { CreateVehicleDto } from './dto/create-vehicle.dto';
-import { UpdateVehicleDto } from './dto/update-vehicle.dto';
-import { QueryVehicleDto } from './dto/query-vehicle.dto';
+import { DeviceRepository } from './device.repository';
+import { CreateDeviceDto } from './dto/create-device.dto';
+import { UpdateDeviceDto } from './dto/update-device.dto';
+import { QueryDeviceDto } from './dto/query-device.dto';
 import { Prisma } from '@/generated/prisma/client';
 
 @Injectable()
-export class VehicleService {
-  constructor(private readonly repo: VehicleRepository) {}
+export class DeviceService {
+  constructor(private readonly repo: DeviceRepository) {}
 
-  async create(dto: CreateVehicleDto, userId: string) {
+  async create(dto: CreateDeviceDto) {
     return this.repo.create({
       ...dto,
-      user: {
-        connect: {
-          id: userId
-        }
-      },
     });
   }
 
-  async getMany(query: QueryVehicleDto) {
-    const where: Prisma.VehicleWhereInput = {
+  async getMany(query: QueryDeviceDto) {
+    const where: Prisma.DeviceWhereInput = {
       ...(query.search && {
-        OR: [{ name: { contains: query.search, mode: 'insensitive' } }],
+        OR: [{ imei: { contains: query.search } }],
       }),
     };
 
     const skip = (query.page - 1) * query.limit;
 
-    const orderBy: Prisma.VehicleOrderByWithRelationInput = {
+    const orderBy: Prisma.DeviceOrderByWithRelationInput = {
       ...(query.sortBy
         ? { [query.sortBy]: query.sortOrder }
         : { createdAt: 'desc' }),
@@ -55,7 +50,7 @@ export class VehicleService {
     return this.repo.getById(id);
   }
 
-  async update(id: string, data: UpdateVehicleDto) {
+  async update(id: string, data: UpdateDeviceDto) {
     return this.repo.update(id, data);
   }
 

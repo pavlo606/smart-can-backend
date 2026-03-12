@@ -15,14 +15,15 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
+  id           String    @id @default(uuid())
+  email        String    @unique
   username     String?
-  passwordHash String   @map("password_hash")
-  role         Role     @default(USER)
-  refreshToken String?  @map("refresh_token")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  passwordHash String    @map("password_hash")
+  role         Role      @default(USER)
+  refreshToken String?   @map("refresh_token")
+  vehicles     Vehicle[]
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -40,8 +41,22 @@ model Vehicle {
   model     String
   year      String?
   vin       String?
+  user      User     @relation(fields: [userId], references: [id])
+  devices   Device[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("vehicles")
+}
+
+model Device {
+  id              String   @id @default(uuid())
+  imei            String
+  vehicleId       String   @map("vehicle_id")
+  firmwareVersion String   @map("firmware_version")
+  vehicle         Vehicle  @relation(fields: [vehicleId], references: [id])
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("devices")
 }

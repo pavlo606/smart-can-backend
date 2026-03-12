@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { VehicleModule } from './modules/vehicle/vehicle.module';
+import { DeviceModule } from './modules/device/device.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { VehicleModule } from './modules/vehicle/vehicle.module';
     AuthModule,
     UserModule,
     VehicleModule,
+    DeviceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
