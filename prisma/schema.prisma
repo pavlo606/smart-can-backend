@@ -50,13 +50,34 @@ model Vehicle {
 }
 
 model Device {
-  id              String   @id @default(uuid())
+  id              String      @id @default(uuid())
   imei            String
-  vehicleId       String   @map("vehicle_id")
-  firmwareVersion String   @map("firmware_version")
-  vehicle         Vehicle  @relation(fields: [vehicleId], references: [id])
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  vehicleId       String      @map("vehicle_id")
+  firmwareVersion String      @map("firmware_version")
+  vehicle         Vehicle     @relation(fields: [vehicleId], references: [id])
+  telemetry       Telemetry[]
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
 
   @@map("devices")
+}
+
+model Telemetry {
+  deviceId String @map("device_id")
+  device   Device @relation(fields: [deviceId], references: [id])
+
+  timestamp DateTime
+
+  latitude  Float?
+  longitude Float?
+  speed     Float?
+
+  rpm         Int?
+  coolantTemp Int?   @map("coolant_temp")
+  fuelLevel   Float? @map("fuel_level")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([deviceId, timestamp])
+  @@map("telemetry")
 }

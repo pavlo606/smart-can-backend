@@ -13,7 +13,7 @@ export class CreateDeviceDto {
   @EmptyStringToNull()
   vehicleId: string;
 
-  @ApiProperty({ example: 'Octavia' })
+  @ApiProperty({ example: '0.0.1' })
   @IsString()
   @EmptyStringToNull()
   firmwareVersion: string;

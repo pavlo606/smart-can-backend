@@ -32,3 +32,8 @@ export type Vehicle = Prisma.VehicleModel
  * 
  */
 export type Device = Prisma.DeviceModel
+/**
+ * Model Telemetry
+ * 
+ */
+export type Telemetry = Prisma.TelemetryModel

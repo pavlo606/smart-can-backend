@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { VehicleModule } from './modules/vehicle/vehicle.module';
 import { DeviceModule } from './modules/device/device.module';
+import { TelemetryModule } from './modules/telemetry/telemetry.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DeviceModule } from './modules/device/device.module';
     UserModule,
     VehicleModule,
     DeviceModule,
+    TelemetryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

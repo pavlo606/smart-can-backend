@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Vehicle: 'Vehicle',
-  Device: 'Device'
+  Device: 'Device',
+  Telemetry: 'Telemetry'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -111,6 +112,21 @@ export const DeviceScalarFieldEnum = {
 } as const
 
 export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum]
+
+
+export const TelemetryScalarFieldEnum = {
+  deviceId: 'deviceId',
+  timestamp: 'timestamp',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  speed: 'speed',
+  rpm: 'rpm',
+  coolantTemp: 'coolantTemp',
+  fuelLevel: 'fuelLevel',
+  createdAt: 'createdAt'
+} as const
+
+export type TelemetryScalarFieldEnum = (typeof TelemetryScalarFieldEnum)[keyof typeof TelemetryScalarFieldEnum]
 
 
 export const SortOrder = {

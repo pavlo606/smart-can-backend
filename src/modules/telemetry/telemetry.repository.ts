@@ -1,0 +1,62 @@
+import { PrismaService } from '@/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@/generated/prisma/client';
+
+@Injectable()
+export class TelemetryRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(data: Prisma.TelemetryUncheckedCreateInput) {
+    return this.prisma.telemetry.create({ data });
+  }
+
+  async getMany(
+    where: Prisma.TelemetryWhereInput,
+    orderBy: Prisma.TelemetryOrderByWithAggregationInput,
+    take: number,
+  ) {
+    return this.prisma.telemetry.findMany({
+      where,
+      take,
+      orderBy,
+    });
+  }
+
+  async count(where?: Prisma.TelemetryWhereInput) {
+    return this.prisma.telemetry.count({ where });
+  }
+
+  async getUnique(deviceId: string, timestamp: string, userId: string) {
+    return this.prisma.telemetry.findUnique({
+      where: {
+        deviceId_timestamp: { deviceId, timestamp },
+        device: { vehicle: { userId } },
+      },
+      include: { device: true },
+    });
+  }
+
+  async update(
+    deviceId: string,
+    timestamp: string,
+    data: Prisma.TelemetryUpdateInput,
+    userId: string,
+  ) {
+    return this.prisma.telemetry.update({
+      where: {
+        deviceId_timestamp: { deviceId, timestamp },
+        device: { vehicle: { userId } },
+      },
+      data,
+    });
+  }
+
+  async delete(deviceId: string, timestamp: string, userId: string) {
+    return this.prisma.telemetry.delete({
+      where: {
+        deviceId_timestamp: { deviceId, timestamp },
+        device: { vehicle: { userId } },
+      },
+    });
+  }
+}
