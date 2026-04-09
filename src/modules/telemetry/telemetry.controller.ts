@@ -18,8 +18,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.enum';
-import { CurrentUser } from '@/common/decorators/current-user';
-import type { JwtPayload } from '@/types/jwt-payload';
 
 @ApiTags('Telemetry')
 @Controller('telemetry')
@@ -41,9 +39,8 @@ export class TelemetryController {
   @Get()
   async getAll(
     @Query() query: QueryTelemetryDto,
-    @CurrentUser() user: JwtPayload,
   ) {
-    return this.service.getMany(query, user.userId);
+    return this.service.getMany(query);
   }
 
   @ApiOperation({ summary: 'Get telemetry by id' })
@@ -53,9 +50,8 @@ export class TelemetryController {
   async getById(
     @Param('deviceId') deviceId: string,
     @Param('timestamp') timestamp: string,
-    @CurrentUser() user: JwtPayload,
   ) {
-    return this.service.getUnique(deviceId, timestamp, user.userId);
+    return this.service.getUnique(deviceId, timestamp);
   }
 
   @ApiOperation({ summary: 'Update telemetry' })
@@ -67,9 +63,8 @@ export class TelemetryController {
     @Param('deviceId') deviceId: string,
     @Param('timestamp') timestamp: string,
     @Body() dto: UpdateTelemetryDto,
-    @CurrentUser() user: JwtPayload,
   ) {
-    return this.service.update(deviceId, timestamp, dto, user.userId);
+    return this.service.update(deviceId, timestamp, dto);
   }
 
   @ApiOperation({ summary: 'Delete telemetry' })
@@ -79,8 +74,7 @@ export class TelemetryController {
   async delete(
     @Param('deviceId') deviceId: string,
     @Param('timestamp') timestamp: string,
-    @CurrentUser() user: JwtPayload,
   ) {
-    return this.service.delete(deviceId, timestamp, user.userId);
+    return this.service.delete(deviceId, timestamp);
   }
 }

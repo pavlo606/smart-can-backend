@@ -15,9 +15,8 @@ export class TelemetryService {
     });
   }
 
-  async getMany(query: QueryTelemetryDto, userId: string) {
+  async getMany(query: QueryTelemetryDto) {
     const where: Prisma.TelemetryWhereInput = {
-      device: { vehicle: { userId } },
       deviceId: query.deviceId,
       timestamp: {
         gte: query.gte,
@@ -45,20 +44,15 @@ export class TelemetryService {
     };
   }
 
-  async getUnique(deviceId: string, timestamp: string, userId: string) {
-    return this.repo.getUnique(deviceId, timestamp, userId);
+  async getUnique(deviceId: string, timestamp: string) {
+    return this.repo.getUnique(deviceId, timestamp);
   }
 
-  async update(
-    deviceId: string,
-    timestamp: string,
-    data: UpdateTelemetryDto,
-    userId: string,
-  ) {
-    return this.repo.update(deviceId, timestamp, data, userId);
+  async update(deviceId: string, timestamp: string, data: UpdateTelemetryDto) {
+    return this.repo.update(deviceId, timestamp, data);
   }
 
-  async delete(deviceId: string, timestamp: string, userId: string) {
-    return this.repo.delete(deviceId, timestamp, userId);
+  async delete(deviceId: string, timestamp: string) {
+    return this.repo.delete(deviceId, timestamp);
   }
 }

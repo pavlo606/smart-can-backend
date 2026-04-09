@@ -7,7 +7,7 @@ import {
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "@/modules/user/user.service";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "@/prisma/prisma.service";
 import { Role } from "./roles/roles.enum";
 
 @Injectable()

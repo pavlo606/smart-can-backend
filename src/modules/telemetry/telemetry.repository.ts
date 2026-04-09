@@ -26,13 +26,11 @@ export class TelemetryRepository {
     return this.prisma.telemetry.count({ where });
   }
 
-  async getUnique(deviceId: string, timestamp: string, userId: string) {
+  async getUnique(deviceId: string, timestamp: string) {
     return this.prisma.telemetry.findUnique({
       where: {
         deviceId_timestamp: { deviceId, timestamp },
-        device: { vehicle: { userId } },
       },
-      include: { device: true },
     });
   }
 
@@ -40,22 +38,19 @@ export class TelemetryRepository {
     deviceId: string,
     timestamp: string,
     data: Prisma.TelemetryUpdateInput,
-    userId: string,
   ) {
     return this.prisma.telemetry.update({
       where: {
         deviceId_timestamp: { deviceId, timestamp },
-        device: { vehicle: { userId } },
       },
       data,
     });
   }
 
-  async delete(deviceId: string, timestamp: string, userId: string) {
+  async delete(deviceId: string, timestamp: string) {
     return this.prisma.telemetry.delete({
       where: {
         deviceId_timestamp: { deviceId, timestamp },
-        device: { vehicle: { userId } },
       },
     });
   }
