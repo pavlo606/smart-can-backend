@@ -6,15 +6,15 @@ export class CreateDeviceDto {
   @ApiProperty({ example: 'abc123' })
   @IsString()
   @EmptyStringToNull()
-  imei: string;
+  imei!: string;
 
   @ApiProperty({ example: '' })
   @IsString()
   @EmptyStringToNull()
-  vehicleId: string;
+  vehicleId!: string;
 
   @ApiProperty({ example: '0.0.1' })
   @IsString()
   @EmptyStringToNull()
-  firmwareVersion: string;
+  firmwareVersion!: string;
 }

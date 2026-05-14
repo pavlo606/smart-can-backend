@@ -17,7 +17,7 @@ const main = async () => {
   console.log('✅ Extension enabled');
 
   await prisma.$executeRawUnsafe(`
-    SELECT create_hypertable('"telemetry"', 'timestamp', if_not_exists => TRUE);
+    SELECT create_hypertable('"telemetry"', 'timestamp', if_not_exists => TRUE, migrate_data => true);
   `);
 
   console.log('✅ Hypertable created');

@@ -6,12 +6,12 @@ export class CreateTelemetryDto {
   @ApiProperty({ example: '' })
   @IsString()
   @EmptyStringToNull()
-  deviceId: string;
+  deviceId!: string;
 
   @ApiProperty({ example: '2023-10-25T14:30:00Z' })
   @IsDateString()
   @EmptyStringToNull()
-  timestamp: string;
+  timestamp!: string;
 
   @ApiProperty({ example: '12.345' })
   @IsOptional()

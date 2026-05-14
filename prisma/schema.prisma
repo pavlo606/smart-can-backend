@@ -42,7 +42,7 @@ model Vehicle {
   year      String?
   vin       String?
   user      User     @relation(fields: [userId], references: [id])
-  devices   Device[]
+  device    Device?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -52,9 +52,10 @@ model Vehicle {
 model Device {
   id              String   @id @default(uuid())
   imei            String
-  vehicleId       String   @map("vehicle_id")
+  vehicleId       String   @unique @map("vehicle_id")
   firmwareVersion String   @map("firmware_version")
   vehicle         Vehicle  @relation(fields: [vehicleId], references: [id])
+  tracks          Track[]
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
@@ -76,5 +77,19 @@ model Telemetry {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@id([deviceId, timestamp])
+  @@index([timestamp])
   @@map("telemetry")
+}
+
+model Track {
+  id             String   @id @default(uuid())
+  deviceId       String   @map("device_id")
+  device         Device   @relation(fields: [deviceId], references: [id])
+  name           String
+  startTimestamp DateTime @map("start_timestamp")
+  endTimestamp   DateTime @map("end_timestamp")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("track")
 }

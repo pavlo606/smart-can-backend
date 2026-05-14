@@ -32,7 +32,7 @@ export class DeviceRepository {
   async getById(id: string, userId: string) {
     return this.prisma.device.findUniqueOrThrow({
       where: { id, vehicle: { userId } },
-      include: { vehicle: true },
+      include: { vehicle: true, tracks: true },
     });
   }
 

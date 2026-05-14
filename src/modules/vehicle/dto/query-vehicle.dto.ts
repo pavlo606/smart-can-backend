@@ -42,7 +42,7 @@ export class QueryVehicleDto {
   })
   @IsOptional()
   @IsEnum(VehicleSortField)
-  sortBy: VehicleSortField;
+  sortBy?: VehicleSortField;
 
   @ApiPropertyOptional({
     type: String,

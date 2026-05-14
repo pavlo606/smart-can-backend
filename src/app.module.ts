@@ -9,6 +9,7 @@ import { UserModule } from './modules/user/user.module';
 import { VehicleModule } from './modules/vehicle/vehicle.module';
 import { DeviceModule } from './modules/device/device.module';
 import { TelemetryModule } from './modules/telemetry/telemetry.module';
+import { TrackModule } from './modules/track/track.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TelemetryModule } from './modules/telemetry/telemetry.module';
     VehicleModule,
     DeviceModule,
     TelemetryModule,
+    TrackModule,
   ],
   controllers: [AppController],
   providers: [AppService],

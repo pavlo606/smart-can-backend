@@ -6,17 +6,17 @@ export class CreateVehicleDto {
   @ApiProperty({ example: 'Some name' })
   @IsString()
   @EmptyStringToNull()
-  name: string;
+  name!: string;
 
   @ApiProperty({ example: 'Skoda' })
   @IsString()
   @EmptyStringToNull()
-  brand: string;
+  brand!: string;
 
   @ApiProperty({ example: 'Octavia' })
   @IsString()
   @EmptyStringToNull()
-  model: string;
+  model!: string;
 
   @ApiPropertyOptional({ example: '2016' })
   @IsOptional()

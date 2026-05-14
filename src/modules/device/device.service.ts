@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DeviceRepository } from './device.repository';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
@@ -56,15 +56,6 @@ export class DeviceService {
   }
 
   async delete(id: string, userId: string) {
-    try {
-      return await this.repo.delete(id, userId);
-    } catch (err) {
-      if (err.cause && err.cause.code === '23001') {
-        throw new BadRequestException(
-          'Failed to delete due to dependences on other tables',
-        );
-      }
-      throw err;
-    }
+    return this.repo.delete(id, userId);
   }
 }

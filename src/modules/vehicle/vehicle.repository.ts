@@ -16,7 +16,7 @@ export class VehicleRepository {
       skip,
       take,
       orderBy,
-      include: { devices: true }
+      include: { device: true }
     });
   }
 
@@ -27,7 +27,7 @@ export class VehicleRepository {
   async getById(id: string, userId: string) {
     return this.prisma.vehicle.findUniqueOrThrow({
       where: { id },
-      include: { devices: true }
+      include: { device: true }
     });
   }
 

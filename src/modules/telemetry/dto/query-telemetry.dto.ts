@@ -9,7 +9,7 @@ export class QueryTelemetryDto {
     required: true,
   })
   @IsString()
-  deviceId: string
+  deviceId!: string
 
   @ApiProperty({
     type: String,
@@ -17,7 +17,7 @@ export class QueryTelemetryDto {
     required: true,
   })
   @IsDateString()
-  gte: string
+  gte!: string
 
   
   @ApiProperty({
@@ -26,7 +26,7 @@ export class QueryTelemetryDto {
     required: true,
   })
   @IsDateString()
-  lte: string
+  lte!: string
 
   @ApiPropertyOptional({
     type: Number,
