@@ -12,6 +12,7 @@ import { TrackModule } from './modules/track/track.module';
 import { ServiceTypeModule } from './modules/service-type/service-type.module';
 import { ServiceRecordModule } from './modules/service-record/service-record.module';
 import { ServiceIntervalModule } from './modules/service-interval/service-interval.module';
+import { VehicleStateModule } from './modules/vehicle-state/vehicle-state.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ServiceIntervalModule } from './modules/service-interval/service-interv
     ServiceTypeModule,
     ServiceRecordModule,
     ServiceIntervalModule,
+    VehicleStateModule,
   ],
   controllers: [AppController],
   providers: [AppService],
