@@ -30,8 +30,22 @@ export class ServiceIntervalRepository {
   }
 
   async getById(id: string, userId: string) {
-    return this.prisma.serviceInterval.findUniqueOrThrow({
+    return this.prisma.serviceInterval.findUnique({
       where: { id, vehicle: { userId } },
+      include: {},
+    });
+  }
+
+  async getByVehicleAndType(
+    vehicleId: string,
+    serviceTypeId: string,
+    userId: string,
+  ) {
+    return this.prisma.serviceInterval.findUnique({
+      where: {
+        vehicleId_serviceTypeId: { vehicleId, serviceTypeId },
+        vehicle: { userId },
+      },
       include: {},
     });
   }
@@ -48,6 +62,8 @@ export class ServiceIntervalRepository {
   }
 
   async delete(id: string, userId: string) {
-    return this.prisma.serviceInterval.delete({ where: { id, vehicle: { userId } } });
+    return this.prisma.serviceInterval.delete({
+      where: { id, vehicle: { userId } },
+    });
   }
 }

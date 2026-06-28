@@ -4,6 +4,7 @@ import { CreateServiceIntervalDto } from './dto/create-service-interval.dto';
 import { QueryServiceIntervalDto } from './dto/query-service-interval.dto';
 import { Prisma } from '@/generated/prisma/client';
 import { UpdateServiceIntervalDto } from './dto/update-service-interval.dto';
+import { QueryUniqueServiceIntervalDto } from './dto/query-unique-service-interval.dto';
 
 @Injectable()
 export class ServiceIntervalService {
@@ -48,6 +49,10 @@ export class ServiceIntervalService {
 
   async getById(id: string, userId: string) {
     return this.repo.getById(id, userId);
+  }
+
+  async getByVehicleAndType(query: QueryUniqueServiceIntervalDto, userId: string) {
+    return this.repo.getByVehicleAndType(query.vehicleId, query.serviceTypeId, userId);
   }
 
   async update(id: string, data: UpdateServiceIntervalDto, userId: string) {

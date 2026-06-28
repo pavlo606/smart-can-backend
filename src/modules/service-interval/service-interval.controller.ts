@@ -21,6 +21,7 @@ import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.enum';
 import { CurrentUser } from '@/common/decorators/current-user';
 import type { JwtPayload } from '@/types/jwt-payload';
+import { QueryUniqueServiceIntervalDto } from './dto/query-unique-service-interval.dto';
 
 @ApiTags('ServiceInterval')
 @Controller('serviceinterval')
@@ -47,9 +48,17 @@ export class ServiceIntervalController {
   @ApiOperation({ summary: 'Get serviceinterval by id' })
   @ApiResponse({ status: 200, description: 'Returns serviceinterval data' })
   @ApiResponse({ status: 404, description: 'No such serviceinterval' })
-  @Get(':id')
+  @Get('unique/:id')
   async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.getById(id, user.userId);
+  }
+
+  @ApiOperation({ summary: 'Get serviceinterval by id' })
+  @ApiResponse({ status: 200, description: 'Returns serviceinterval data' })
+  @ApiResponse({ status: 404, description: 'No such serviceinterval' })
+  @Get('unique')
+  async getByVehicleAndType(@Query() query: QueryUniqueServiceIntervalDto, @CurrentUser() user: JwtPayload) {
+    return this.service.getByVehicleAndType(query, user.userId);
   }
 
   @ApiOperation({ summary: 'Update serviceinterval' })

@@ -30,7 +30,7 @@ export class ServiceTypeRepository {
   }
 
   async getById(id: string, userId: string) {
-    return this.prisma.serviceType.findUniqueOrThrow({
+    return this.prisma.serviceType.findUnique({
       where: { id, userId },
       include: {},
     });

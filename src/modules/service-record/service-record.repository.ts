@@ -30,7 +30,7 @@ export class ServiceRecordRepository {
   }
 
   async getById(id: string, userId: string) {
-    return this.prisma.serviceRecord.findUniqueOrThrow({
+    return this.prisma.serviceRecord.findUnique({
       where: { id, vehicle: { userId } },
       include: {},
     });
