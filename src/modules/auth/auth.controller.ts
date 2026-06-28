@@ -113,12 +113,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('changepassword')
-  @ApiOperation({ summary: 'Change user password' })
-  @ApiResponse({ status: 201, description: 'Password changed' })
-  @ApiResponse({ status: 400, description: 'Invalid dto' })
-  @ApiResponse({ status: 401, description: "Old password didn't match" })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  async changePasswor(@Req() req: Request, @Body() dto: ChangePasswordDto) {
+  async changePassword(@Req() req: Request, @Body() dto: ChangePasswordDto) {
     const user = req.user as { userId: string };
     await this.authService.changePassword(
       user.userId,

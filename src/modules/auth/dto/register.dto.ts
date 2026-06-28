@@ -5,16 +5,16 @@ import { Role } from "../roles/roles.enum";
 export class RegisterDto {
     @ApiProperty({ example: "Some username" })
     @IsString()
-    username: string;
+    username!: string;
 
     @ApiProperty({ example: "user@example.com" })
     @IsEmail()
-    email: string;
+    email!: string;
 
     @ApiProperty({ example: "StrongPass123" })
     @IsString()
     @MinLength(4)
-    password: string;
+    password!: string;
 
     @ApiProperty({ example: "USER" })
     @IsOptional()
