@@ -1,66 +1,53 @@
-import {
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
-import * as bcrypt from "bcrypt";
-import { PrismaService } from '@/prisma/prisma.service';
+import { ConflictException, Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Prisma } from '@/generated/prisma/client';
 import { QueryUserDto } from './dto/query-user.dto';
 import { Role } from '../auth/roles/roles.enum';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly repo: UserRepository,
+  ) {}
 
   async create({ username, email, password, role }: CreateUserDto) {
-    if (await this.findByEmail(email))
-      throw new ConflictException('Email is already in use');
+    if (await this.findByEmail(email)) throw new ConflictException('Email is already in use');
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = this.prisma.user.create({
-      data: {
-        email,
-        username,
-        passwordHash,
-        role,
-      }
-    })
+    const user = this.repo.create({
+      email,
+      username,
+      passwordHash,
+      role,
+    });
 
-    return user 
+    return user;
   }
 
-  async createForRegister(
-    username: string,
-    email: string,
-    passwordHash: string,
-    role: Role,
-  ) {
-    return this.prisma.user.create({
-      data: {
-        username,
-        email,
-        passwordHash,
-        role,
-      },
+  async createForRegister(username: string, email: string, passwordHash: string, role: Role) {
+    return this.repo.create({
+      username,
+      email,
+      passwordHash,
+      role,
     });
   }
 
   async findByEmail(email: string) {
-    return this.prisma.user.findUnique({
-      where: { email },
-    });
+    return this.repo.getByEmail(email);
   }
 
   async findByIdSafe(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
+    const user = await this.repo.getById(id);
     return this.getSafeUserData(user);
   }
 
   async findById(id: string) {
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.repo.getById(id);
   }
 
   async findAll(query: QueryUserDto) {
@@ -76,19 +63,12 @@ export class UserService {
     const skip = (query.page - 1) * query.limit;
 
     const orderBy: Prisma.UserOrderByWithAggregationInput = {
-      ...(query.sortBy
-        ? { [query.sortBy]: query.sortOrder }
-        : { createdAt: 'desc' }),
+      ...(query.sortBy ? { [query.sortBy]: query.sortOrder } : { createdAt: 'desc' }),
     };
 
-    const users = await this.prisma.user.findMany({
-      where,
-      orderBy,
-      skip,
-      take: query.limit,
-    });
+    const users = await this.repo.getMany(where, orderBy, skip, query.limit);
 
-    const total = await this.prisma.user.count({ where });
+    const total = await this.repo.count(where);
 
     return {
       items: users.map((user) => this.getSafeUserData(user)),
@@ -101,37 +81,26 @@ export class UserService {
     };
   }
 
-  async updateRefreshToken(
-    id: string,
-    data: Partial<{ refreshToken: string | null }>,
-  ) {
-    return this.prisma.user.update({
-      where: { id },
-      data,
-    });
+  async updateRefreshToken(id: string, data: Partial<{ refreshToken: string | null }>) {
+    return this.repo.update(id, data);
   }
 
   async update(id: string, { email, username, password, role }: UpdateUserDto) {
-    let passwordHash: string | undefined = undefined
+    let passwordHash: string | undefined = undefined;
     if (password) {
       passwordHash = await bcrypt.hash(password, 10);
     }
 
-    return this.prisma.user.update({
-      where: { id },
-      data: {
-        email,
-        username,
-        passwordHash,
-        role
-      },
+    return this.repo.update(id, {
+      email,
+      username,
+      passwordHash,
+      role,
     });
   }
 
   async delete(id: string) {
-    return this.prisma.user.delete({
-      where: { id },
-    });
+    return this.repo.delete(id);
   }
 
   private getSafeUserData = (user: any) => {
