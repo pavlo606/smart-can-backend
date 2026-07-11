@@ -11,9 +11,8 @@ export class VehicleStateRepository {
   }
 
   async getById(vehicleId: string, userId: string) {
-    return this.prisma.vehicleState.findUnique({
+    return this.prisma.vehicleState.findUniqueOrThrow({
       where: { vehicleId, vehicle: { userId } },
-      include: { vehicle: true },
     });
   }
 

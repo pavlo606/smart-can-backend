@@ -1,6 +1,8 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@/generated/prisma/client';
+import { trackListInclude } from './prisma/track-list.query';
+import { trackDetailsInclude } from './prisma/track-details.query';
 
 @Injectable()
 export class TrackRepository {
@@ -16,7 +18,7 @@ export class TrackRepository {
       skip,
       take,
       orderBy,
-      include: { device: true }
+      ...trackListInclude
     });
   }
 
@@ -27,7 +29,7 @@ export class TrackRepository {
   async getById(id: string, userId: string) {
     return this.prisma.track.findUniqueOrThrow({
       where: { id },
-      include: { device: true }
+      ...trackDetailsInclude
     });
   }
 

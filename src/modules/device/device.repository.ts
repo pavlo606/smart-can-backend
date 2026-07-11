@@ -1,6 +1,8 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@/generated/prisma/client';
+import { deviceListInclude } from './prisma/device-list.query';
+import { deviceDetailsInclude } from './prisma/device-details.query';
 
 @Injectable()
 export class DeviceRepository {
@@ -21,7 +23,7 @@ export class DeviceRepository {
       skip,
       take,
       orderBy,
-      include: { vehicle: true },
+      ...deviceListInclude
     });
   }
 
@@ -32,7 +34,7 @@ export class DeviceRepository {
   async getById(id: string, userId: string) {
     return this.prisma.device.findUniqueOrThrow({
       where: { id, vehicle: { userId } },
-      include: { vehicle: true, tracks: true },
+      ...deviceDetailsInclude
     });
   }
 

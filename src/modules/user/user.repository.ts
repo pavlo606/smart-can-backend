@@ -31,7 +31,7 @@ export class UserRepository {
   }
 
   async getById(id: string) {
-    return this.prisma.user.findUnique({
+    return this.prisma.user.findUniqueOrThrow({
       where: { id },
     });
   }

@@ -1,6 +1,8 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@/generated/prisma/client';
+import { vehicleListInclude } from './prisma/vehicle-list.query';
+import { vehicleDetailsInclude } from './prisma/vehicle-details.query';
 
 @Injectable()
 export class VehicleRepository {
@@ -10,13 +12,18 @@ export class VehicleRepository {
     return this.prisma.vehicle.create({ data });
   }
 
-  async getMany(where: Prisma.VehicleWhereInput, orderBy: Prisma.VehicleOrderByWithAggregationInput, skip: number, take: number) {
+  async getMany(
+    where: Prisma.VehicleWhereInput,
+    orderBy: Prisma.VehicleOrderByWithAggregationInput,
+    skip: number,
+    take: number,
+  ) {
     return this.prisma.vehicle.findMany({
       where,
       skip,
       take,
       orderBy,
-      include: { device: true }
+      ...vehicleListInclude,
     });
   }
 
@@ -26,16 +33,16 @@ export class VehicleRepository {
 
   async getById(id: string, userId: string) {
     return this.prisma.vehicle.findUniqueOrThrow({
-      where: { id },
-      include: { device: true }
+      where: { id, userId },
+      ...vehicleDetailsInclude,
     });
   }
 
   async update(id: string, data: Prisma.VehicleUpdateInput, userId: string) {
-    return this.prisma.vehicle.update({ where: { id }, data });
+    return this.prisma.vehicle.update({ where: { id, userId }, data });
   }
 
   async delete(id: string, userId: string) {
-    return this.prisma.vehicle.delete({ where: { id } });
+    return this.prisma.vehicle.delete({ where: { id, userId } });
   }
 }

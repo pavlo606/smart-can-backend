@@ -27,7 +27,7 @@ export class TelemetryRepository {
   }
 
   async getUnique(deviceId: string, timestamp: string) {
-    return this.prisma.telemetry.findUnique({
+    return this.prisma.telemetry.findUniqueOrThrow({
       where: {
         deviceId_timestamp: { deviceId, timestamp },
       },

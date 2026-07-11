@@ -30,7 +30,7 @@ export class ServiceIntervalRepository {
   }
 
   async getById(id: string, userId: string) {
-    return this.prisma.serviceInterval.findUnique({
+    return this.prisma.serviceInterval.findUniqueOrThrow({
       where: { id, vehicle: { userId } },
       include: {},
     });
@@ -41,7 +41,7 @@ export class ServiceIntervalRepository {
     serviceTypeId: string,
     userId: string,
   ) {
-    return this.prisma.serviceInterval.findUnique({
+    return this.prisma.serviceInterval.findUniqueOrThrow({
       where: {
         vehicleId_serviceTypeId: { vehicleId, serviceTypeId },
         vehicle: { userId },

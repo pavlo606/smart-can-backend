@@ -6,11 +6,14 @@ import { Prisma } from '@/generated/prisma/client';
 import { QueryUserDto } from './dto/query-user.dto';
 import { Role } from '../auth/roles/roles.enum';
 import { UserRepository } from './user.repository';
+import { UserMapper } from './mappers/user.mapper';
+import { PaginatedMapper } from '@/common/mappers/paginated.mapper';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly repo: UserRepository,
+    private readonly mapper: UserMapper,
   ) {}
 
   async create({ username, email, password, role }: CreateUserDto) {
@@ -18,23 +21,24 @@ export class UserService {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = this.repo.create({
+    const user = await this.repo.create({
       email,
       username,
       passwordHash,
       role,
     });
 
-    return user;
+    return this.mapper.toBaseResponse(user);
   }
 
   async createForRegister(username: string, email: string, passwordHash: string, role: Role) {
-    return this.repo.create({
+    const user = await this.repo.create({
       username,
       email,
       passwordHash,
       role,
     });
+    return user;
   }
 
   async findByEmail(email: string) {
@@ -43,7 +47,7 @@ export class UserService {
 
   async findByIdSafe(id: string) {
     const user = await this.repo.getById(id);
-    return this.getSafeUserData(user);
+    return this.mapper.toBaseResponse(user);
   }
 
   async findById(id: string) {
@@ -70,19 +74,23 @@ export class UserService {
 
     const total = await this.repo.count(where);
 
-    return {
-      items: users.map((user) => this.getSafeUserData(user)),
-      meta: {
-        total,
-        page: query.page,
-        limit: query.limit,
-        totalPages: Math.ceil(total / query.limit),
+    return PaginatedMapper.map(
+      {
+        items: users,
+        meta: {
+          total,
+          page: query.page,
+          limit: query.limit,
+          totalPages: Math.ceil(total / query.limit),
+        },
       },
-    };
+      (user) => this.mapper.toBaseResponse(user),
+    );
   }
 
   async updateRefreshToken(id: string, data: Partial<{ refreshToken: string | null }>) {
-    return this.repo.update(id, data);
+    const user = await this.repo.update(id, data);
+    return this.mapper.toBaseResponse(user);
   }
 
   async update(id: string, { email, username, password, role }: UpdateUserDto) {
@@ -91,26 +99,17 @@ export class UserService {
       passwordHash = await bcrypt.hash(password, 10);
     }
 
-    return this.repo.update(id, {
+    const user = await this.repo.update(id, {
       email,
       username,
       passwordHash,
       role,
     });
+    return this.mapper.toBaseResponse(user);
   }
 
   async delete(id: string) {
-    return this.repo.delete(id);
+    const user = await this.repo.delete(id);
+    return this.mapper.toBaseResponse(user);
   }
-
-  private getSafeUserData = (user: any) => {
-    return {
-      id: user?.id,
-      username: user?.username,
-      email: user?.email,
-      role: user?.role,
-      createdAt: user?.createdAt,
-      updatedAt: user?.updatedAt,
-    };
-  };
 }
