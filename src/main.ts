@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { PrismaExceptionFilter } from './common/filters/PrismaExceptionFilter';
+import { requestLogger } from './common/middlware/request-logger.middleware';
+import { ResponseLoggerInterceptor } from './common/interceptors/response-logger.interseptor';
 
 
 async function bootstrap() {
@@ -15,6 +17,11 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+  app.use(requestLogger);
+
+  app.useGlobalInterceptors(new ResponseLoggerInterceptor())
+
+  app.useGlobalFilters(new PrismaExceptionFilter())
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -32,8 +39,10 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, documentFactory);
 
-  app.useGlobalFilters(new PrismaExceptionFilter())
 
   await app.listen(process.env.PORT ?? 3000);
+  
+  const logger = new Logger();
+  logger.debug(`Aplication is running on: ${await app.getUrl()}`, "Bootstrap")
 }
 bootstrap();
