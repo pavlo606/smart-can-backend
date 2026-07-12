@@ -3,9 +3,10 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
-import { PrismaExceptionFilter } from './common/filters/PrismaExceptionFilter';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import { requestLogger } from './common/middlware/request-logger.middleware';
 import { ResponseLoggerInterceptor } from './common/interceptors/response-logger.interseptor';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 
 async function bootstrap() {
@@ -21,6 +22,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ResponseLoggerInterceptor())
 
+  app.useGlobalFilters(new GlobalExceptionFilter())
   app.useGlobalFilters(new PrismaExceptionFilter())
 
   app.useGlobalPipes(
