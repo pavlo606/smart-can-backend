@@ -24,7 +24,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       case 'P2003':
         return response.status(HttpStatus.CONFLICT).json({
           statusCode: 409,
-          message: 'Cannot delete: related records exist',
+          message: 'Foreign Key Failed: record does not exist',
           error: 'Conflict',
         });
 
