@@ -53,7 +53,7 @@ export class ServiceIntervalController {
     return this.service.getById(id, user.userId);
   }
 
-  @ApiOperation({ summary: 'Get serviceinterval by id' })
+  @ApiOperation({ summary: 'Get serviceinterval by vehicleId and ServiceTypeId' })
   @ApiResponse({ status: 200, description: 'Returns serviceinterval data' })
   @ApiResponse({ status: 404, description: 'No such serviceinterval' })
   @Get('unique')

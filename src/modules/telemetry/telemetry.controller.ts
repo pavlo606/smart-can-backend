@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TelemetryService } from './telemetry.service';
 import { CreateTelemetryDto } from './dto/create-telemetry.dto';
@@ -34,23 +24,18 @@ export class TelemetryController {
     return this.service.create(dto);
   }
 
-  @ApiOperation({ summary: 'Get many telemetrys with search and pagination' })
-  @ApiResponse({ status: 200, description: 'Returns telemetrys data' })
+  @ApiOperation({ summary: 'Get many telemetries within deviceId and timeframe' })
+  @ApiResponse({ status: 200, description: 'Returns telemetries data' })
   @Get()
-  async getAll(
-    @Query() query: QueryTelemetryDto,
-  ) {
+  async getAll(@Query() query: QueryTelemetryDto) {
     return this.service.getMany(query);
   }
 
-  @ApiOperation({ summary: 'Get telemetry by id' })
+  @ApiOperation({ summary: 'Get telemetry by deviceId and timestamp' })
   @ApiResponse({ status: 200, description: 'Returns telemetry data' })
   @ApiResponse({ status: 404, description: 'No such telemetry' })
   @Get(':deviceId/:timestamp')
-  async getById(
-    @Param('deviceId') deviceId: string,
-    @Param('timestamp') timestamp: string,
-  ) {
+  async getById(@Param('deviceId') deviceId: string, @Param('timestamp') timestamp: string) {
     return this.service.getUnique(deviceId, timestamp);
   }
 
@@ -71,10 +56,7 @@ export class TelemetryController {
   @ApiResponse({ status: 200, description: 'Deleted successfuly' })
   @ApiResponse({ status: 404, description: 'No such telemetry' })
   @Delete(':deviceId/:timestamp')
-  async delete(
-    @Param('deviceId') deviceId: string,
-    @Param('timestamp') timestamp: string,
-  ) {
+  async delete(@Param('deviceId') deviceId: string, @Param('timestamp') timestamp: string) {
     return this.service.delete(deviceId, timestamp);
   }
 }
