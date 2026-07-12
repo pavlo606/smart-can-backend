@@ -2,6 +2,7 @@ services:
   db:
     image: timescale/timescaledb:latest-pg14
     container_name: timescale-db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -10,12 +11,34 @@ services:
       - "5433:5432"
     volumes:
       - ./data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  test-db:
-    image: timescale/timescaledb:latest-pg14
-    environment:
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_DB: test_db
+  # test-db:
+  #   image: timescale/timescaledb:latest-pg14
+  #   environment:
+  #     POSTGRES_USER: test
+  #     POSTGRES_PASSWORD: test
+  #     POSTGRES_DB: test_db
+  #   ports:
+  #     - "5434:5432"
+
+  backend:
+    build: .
+
+    container_name: obd2-backend
+
+    restart: unless-stopped
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    env_file:
+      - .env.docker
+
     ports:
-      - "5434:5432"
+      - "3000:3000"
