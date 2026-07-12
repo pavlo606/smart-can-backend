@@ -1,10 +1,10 @@
 import { EmptyStringToNull } from '@/common/decorators/empty-string-to-null';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsLatitude, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateTelemetryDto {
   @ApiProperty({ example: '' })
-  @IsString()
+  @IsUUID()
   @EmptyStringToNull()
   deviceId!: string;
 
@@ -15,12 +15,12 @@ export class CreateTelemetryDto {
 
   @ApiProperty({ example: '12.345' })
   @IsOptional()
-  @IsNumber()
+  @IsLatitude()
   latitude?: number;
 
   @ApiProperty({ example: '12.345' })
   @IsOptional()
-  @IsNumber()
+  @IsLatitude()
   longitude?: number;
   
   @ApiProperty({ example: '12' })

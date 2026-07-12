@@ -1,10 +1,10 @@
 import { EmptyStringToNull } from '@/common/decorators/empty-string-to-null';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateVehicleStateDto {
   @ApiProperty({ example: '' })
-  @IsString()
+  @IsUUID()
   @EmptyStringToNull()
   vehicleId!: string;
 

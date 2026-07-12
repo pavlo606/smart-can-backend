@@ -1,10 +1,10 @@
 import { EmptyStringToNull } from '@/common/decorators/empty-string-to-null';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsDateString, IsOptional, IsString, IsUUID, MinLength } from 'class-validator';
 
 export class CreateTrackDto {
   @ApiProperty({ example: '' })
-  @IsString()
+  @IsUUID()
   @EmptyStringToNull()
   deviceId!: string;
 
