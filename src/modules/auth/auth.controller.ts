@@ -85,7 +85,7 @@ export class AuthController {
   @Post('refresh')
   @ApiOperation({ summary: 'Refresh access token from cookie' })
   @ApiResponse({ status: 201, description: 'Token refreshed' })
-  @ApiResponse({ status: 401, description: 'Invalid credentionals' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async refresh(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
@@ -113,6 +113,10 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('changepassword')
+  @ApiOperation({ summary: 'Change passowrd for loggined user' })
+  @ApiResponse({ status: 201, description: 'Password updated' })
+  @ApiResponse({ status: 401, description: "Old password didn't match" })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async changePassword(@Req() req: Request, @Body() dto: ChangePasswordDto) {
     const user = req.user as { userId: string };
     await this.authService.changePassword(
@@ -128,7 +132,7 @@ export class AuthController {
   @Post('logout')
   @ApiOperation({ summary: 'Log out user' })
   @ApiResponse({ status: 201, description: 'Logged out' })
-  @ApiResponse({ status: 401, description: 'Invalid credentionals' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async logout(
     @CurrentUser() user: JwtPayload,
     @Res({ passthrough: true }) res: Response,
@@ -153,8 +157,7 @@ export class AuthController {
   @Post('logout/delete')
   @ApiOperation({ summary: 'Log out user and delete account' })
   @ApiResponse({ status: 201, description: 'Logged out and deleted' })
-  @ApiResponse({ status: 201, description: 'Logged out' })
-  @ApiResponse({ status: 401, description: 'Invalid credentionals' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async logoutDelete(
     @CurrentUser() user: JwtPayload,
     @Res({ passthrough: true }) res: Response,

@@ -29,41 +29,47 @@ import type { JwtPayload } from '@/types/jwt-payload';
 export class ServiceTypeController {
   constructor(private service: ServiceTypeService) {}
 
-  @ApiOperation({ summary: 'Create servicetype' })
-  @ApiResponse({ status: 201, description: 'Returns created servicetype data' })
+  @ApiOperation({ summary: 'Create service type' })
+  @ApiResponse({ status: 201, description: 'Returns created service type data' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post()
   async create(@Body() dto: CreateServiceTypeDto, @CurrentUser() user: JwtPayload) {
     return this.service.create(dto, user.userId);
   }
 
-  @ApiOperation({ summary: 'Get many servicetypes with search and pagination' })
-  @ApiResponse({ status: 200, description: 'Returns servicetypes data' })
+  @ApiOperation({ summary: 'Get many service types with search and pagination' })
+  @ApiResponse({ status: 200, description: 'Returns service types data' })
+  @ApiResponse({ status: 400, description: 'Invalid query params' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get()
   async getAll(@Query() query: QueryServiceTypeDto, @CurrentUser() user: JwtPayload) {
     return this.service.getMany(query, user.userId);
   }
 
-  @ApiOperation({ summary: 'Get servicetype by id' })
+  @ApiOperation({ summary: 'Get service type by id' })
   @ApiResponse({ status: 200, description: 'Returns servicetype data' })
-  @ApiResponse({ status: 404, description: 'No such servicetype' })
+  @ApiResponse({ status: 404, description: 'No such service type' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get(':id')
   async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.getById(id, user.userId);
   }
 
-  @ApiOperation({ summary: 'Update servicetype' })
+  @ApiOperation({ summary: 'Update service type' })
   @ApiResponse({ status: 200, description: 'Updated successfuly' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
-  @ApiResponse({ status: 404, description: 'No such servicetype' })
+  @ApiResponse({ status: 404, description: 'No such service type' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateServiceTypeDto, @CurrentUser() user: JwtPayload) {
     return this.service.update(id, dto, user.userId);
   }
 
-  @ApiOperation({ summary: 'Delete servicetype' })
+  @ApiOperation({ summary: 'Delete service type' })
   @ApiResponse({ status: 200, description: 'Deleted successfuly' })
-  @ApiResponse({ status: 404, description: 'No such servicetype' })
+  @ApiResponse({ status: 404, description: 'No such service type' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete(':id')
   async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.delete(id, user.userId);

@@ -32,6 +32,7 @@ export class TrackController {
   @ApiOperation({ summary: 'Create track' })
   @ApiResponse({ status: 201, description: 'Returns created track data' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post()
   async create(@Body() dto: CreateTrackDto, @CurrentUser() user: JwtPayload) {
     return this.service.create(dto, user.userId);
@@ -39,6 +40,8 @@ export class TrackController {
 
   @ApiOperation({ summary: 'Get many tracks with search and pagination' })
   @ApiResponse({ status: 200, description: 'Returns tracks data' })
+  @ApiResponse({ status: 400, description: 'Invalid query params' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get()
   async getAll(@Query() query: QueryTrackDto, @CurrentUser() user: JwtPayload) {
     return this.service.getMany(query, user.userId);
@@ -47,6 +50,7 @@ export class TrackController {
   @ApiOperation({ summary: 'Get track by id' })
   @ApiResponse({ status: 200, description: 'Returns track data' })
   @ApiResponse({ status: 404, description: 'No such track' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get(':id')
   async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.getById(id, user.userId);
@@ -56,6 +60,7 @@ export class TrackController {
   @ApiResponse({ status: 200, description: 'Updated successfuly' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
   @ApiResponse({ status: 404, description: 'No such track' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateTrackDto, @CurrentUser() user: JwtPayload) {
     return this.service.update(id, dto, user.userId);
@@ -64,6 +69,7 @@ export class TrackController {
   @ApiOperation({ summary: 'Delete track' })
   @ApiResponse({ status: 200, description: 'Deleted successfuly' })
   @ApiResponse({ status: 404, description: 'No such track' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete(':id')
   async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.delete(id, user.userId);

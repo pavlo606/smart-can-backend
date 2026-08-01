@@ -32,6 +32,7 @@ export class VehicleController {
   @ApiOperation({ summary: 'Create vehicle' })
   @ApiResponse({ status: 201, description: 'Returns created vehicle data' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post()
   async create(@Body() dto: CreateVehicleDto, @CurrentUser() user: JwtPayload) {
     return this.service.create(dto, user.userId);
@@ -39,6 +40,8 @@ export class VehicleController {
 
   @ApiOperation({ summary: 'Get many vehicles with search and pagination' })
   @ApiResponse({ status: 200, description: 'Returns vehicles data' })
+  @ApiResponse({ status: 400, description: 'Invalid query params' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get()
   async getAll(@Query() query: QueryVehicleDto, @CurrentUser() user: JwtPayload) {
     return this.service.getMany(query, user.userId);
@@ -47,6 +50,7 @@ export class VehicleController {
   @ApiOperation({ summary: 'Get vehicle by id' })
   @ApiResponse({ status: 200, description: 'Returns vehicle data' })
   @ApiResponse({ status: 404, description: 'No such vehicle' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get(':id')
   async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.getById(id, user.userId);
@@ -56,6 +60,7 @@ export class VehicleController {
   @ApiResponse({ status: 200, description: 'Updated successfuly' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
   @ApiResponse({ status: 404, description: 'No such vehicle' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateVehicleDto, @CurrentUser() user: JwtPayload) {
     return this.service.update(id, dto, user.userId);
@@ -64,6 +69,7 @@ export class VehicleController {
   @ApiOperation({ summary: 'Delete vehicle' })
   @ApiResponse({ status: 200, description: 'Deleted successfuly' })
   @ApiResponse({ status: 404, description: 'No such vehicle' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete(':id')
   async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.delete(id, user.userId);

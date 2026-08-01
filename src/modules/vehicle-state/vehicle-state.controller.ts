@@ -28,34 +28,38 @@ import type { JwtPayload } from '@/types/jwt-payload';
 export class VehicleStateController {
   constructor(private service: VehicleStateService) {}
 
-  @ApiOperation({ summary: 'Create vehiclestate' })
-  @ApiResponse({ status: 201, description: 'Returns created vehiclestate data' })
+  @ApiOperation({ summary: 'Create vehicle state' })
+  @ApiResponse({ status: 201, description: 'Returns created vehicle state data' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post()
   async create(@Body() dto: CreateVehicleStateDto, @CurrentUser() user: JwtPayload) {
     return this.service.create(dto, user.userId);
   }
 
-  @ApiOperation({ summary: 'Get vehicleState by vehicleId' })
-  @ApiResponse({ status: 200, description: 'Returns vehiclestate data' })
-  @ApiResponse({ status: 404, description: 'No such vehiclestate' })
+  @ApiOperation({ summary: 'Get vehicle state by vehicleId' })
+  @ApiResponse({ status: 200, description: 'Returns vehicle state data' })
+  @ApiResponse({ status: 404, description: 'No such vehicle state' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get(':vehicleId')
   async getById(@Param('vehicleId') vehicleId: string, @CurrentUser() user: JwtPayload) {
     return this.service.getById(vehicleId, user.userId);
   }
 
-  @ApiOperation({ summary: 'Update vehiclestate' })
+  @ApiOperation({ summary: 'Update vehicle state' })
   @ApiResponse({ status: 200, description: 'Updated successfuly' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
-  @ApiResponse({ status: 404, description: 'No such vehiclestate' })
+  @ApiResponse({ status: 404, description: 'No such vehicle state' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Patch(':vehicleId')
   async update(@Param('vehicleId') vehicleId: string, @Body() dto: UpdateVehicleStateDto, @CurrentUser() user: JwtPayload) {
     return this.service.update(vehicleId, dto, user.userId);
   }
 
-  @ApiOperation({ summary: 'Delete vehiclestate' })
+  @ApiOperation({ summary: 'Delete vehicle state' })
   @ApiResponse({ status: 200, description: 'Deleted successfuly' })
-  @ApiResponse({ status: 404, description: 'No such vehiclestate' })
+  @ApiResponse({ status: 404, description: 'No such vehicle state' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete(':vehicleId')
   async delete(@Param('vehicleId') vehicleId: string, @CurrentUser() user: JwtPayload) {
     return this.service.delete(vehicleId, user.userId);

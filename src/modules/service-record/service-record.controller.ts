@@ -29,41 +29,47 @@ import type { JwtPayload } from '@/types/jwt-payload';
 export class ServiceRecordController {
   constructor(private service: ServiceRecordService) {}
 
-  @ApiOperation({ summary: 'Create servicerecord' })
-  @ApiResponse({ status: 201, description: 'Returns created servicerecord data' })
+  @ApiOperation({ summary: 'Create service record' })
+  @ApiResponse({ status: 201, description: 'Returns created service record data' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post()
   async create(@Body() dto: CreateServiceRecordDto, @CurrentUser() user: JwtPayload) {
     return this.service.create(dto, user.userId);
   }
 
-  @ApiOperation({ summary: 'Get many servicerecords with search and pagination' })
-  @ApiResponse({ status: 200, description: 'Returns servicerecords data' })
+  @ApiOperation({ summary: 'Get many service records with search and pagination' })
+  @ApiResponse({ status: 200, description: 'Returns service records data' })
+  @ApiResponse({ status: 400, description: 'Invalid query params' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get()
   async getAll(@Query() query: QueryServiceRecordDto, @CurrentUser() user: JwtPayload) {
     return this.service.getMany(query, user.userId);
   }
 
-  @ApiOperation({ summary: 'Get servicerecord by id' })
-  @ApiResponse({ status: 200, description: 'Returns servicerecord data' })
-  @ApiResponse({ status: 404, description: 'No such servicerecord' })
+  @ApiOperation({ summary: 'Get service record by id' })
+  @ApiResponse({ status: 200, description: 'Returns service record data' })
+  @ApiResponse({ status: 404, description: 'No such service record' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get(':id')
   async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.getById(id, user.userId);
   }
 
-  @ApiOperation({ summary: 'Update servicerecord' })
+  @ApiOperation({ summary: 'Update service record' })
   @ApiResponse({ status: 200, description: 'Updated successfuly' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
-  @ApiResponse({ status: 404, description: 'No such servicerecord' })
+  @ApiResponse({ status: 404, description: 'No such service record' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateServiceRecordDto, @CurrentUser() user: JwtPayload) {
     return this.service.update(id, dto, user.userId);
   }
 
-  @ApiOperation({ summary: 'Delete servicerecord' })
+  @ApiOperation({ summary: 'Delete service record' })
   @ApiResponse({ status: 200, description: 'Deleted successfuly' })
-  @ApiResponse({ status: 404, description: 'No such servicerecord' })
+  @ApiResponse({ status: 404, description: 'No such service record' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete(':id')
   async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.delete(id, user.userId);

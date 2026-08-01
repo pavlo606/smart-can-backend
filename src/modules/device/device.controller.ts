@@ -32,6 +32,7 @@ export class DeviceController {
   @ApiOperation({ summary: 'Create device' })
   @ApiResponse({ status: 201, description: 'Returns created device data' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post()
   async create(@Body() dto: CreateDeviceDto) {
     return this.service.create(dto);
@@ -39,6 +40,8 @@ export class DeviceController {
 
   @ApiOperation({ summary: 'Get many devices with search and pagination' })
   @ApiResponse({ status: 200, description: 'Returns devices data' })
+  @ApiResponse({ status: 400, description: 'Invalid query parameters' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get()
   async getAll(@Query() query: QueryDeviceDto, @CurrentUser() user: JwtPayload) {
     return this.service.getMany(query, user.userId);
@@ -47,6 +50,7 @@ export class DeviceController {
   @ApiOperation({ summary: 'Get device by id' })
   @ApiResponse({ status: 200, description: 'Returns device data' })
   @ApiResponse({ status: 404, description: 'No such device' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get(':id')
   async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.getById(id, user.userId);
@@ -56,6 +60,7 @@ export class DeviceController {
   @ApiResponse({ status: 200, description: 'Updated successfuly' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
   @ApiResponse({ status: 404, description: 'No such device' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateDeviceDto, @CurrentUser() user: JwtPayload) {
     return this.service.update(id, dto, user.userId);
@@ -64,6 +69,7 @@ export class DeviceController {
   @ApiOperation({ summary: 'Delete device' })
   @ApiResponse({ status: 200, description: 'Deleted successfuly' })
   @ApiResponse({ status: 404, description: 'No such device' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete(':id')
   async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.service.delete(id, user.userId);
