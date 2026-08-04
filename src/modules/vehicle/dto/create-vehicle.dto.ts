@@ -26,7 +26,7 @@ export class CreateVehicleDto {
   @EmptyStringToNull()
   year?: string;
 
-  @ApiPropertyOptional({ example: 'TMJ123456' })
+  @ApiPropertyOptional({ example: 'TMJ12345678910123' })
   @IsOptional()
   @IsVin()
   @StringToUpperCase()

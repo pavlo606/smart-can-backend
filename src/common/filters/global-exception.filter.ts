@@ -31,9 +31,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       this.logger.error(message)
     }
 
+    console.log(typeof exception)
+    console.log(JSON.stringify(exception))
+    console.log((exception as any).message)
+
     response.status(status).json({
       statusCode: status,
-      message: exception instanceof HttpException ? exception.message : 'Internal server error',
+      error: exception instanceof HttpException ? (exception as any)?.response?.error : 'Internal server error',
+      message: exception instanceof HttpException ? (exception as any)?.response?.message : 'Internal server error',
     });
   }
 }

@@ -87,7 +87,7 @@ export class AuthService {
     }
 
     private async getTokens(userId: string, email: string, role) {
-        const payload = { sub: userId, email, role };
+        const payload = { sub: userId, jti: crypto.randomUUID(), email, role };
         const accessToken = await this.jwtService.signAsync(payload, {
             expiresIn: "15m",
             secret: process.env.JWT_SECRET || 'super-secret',
