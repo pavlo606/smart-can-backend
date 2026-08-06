@@ -25,8 +25,6 @@ import { AuthDeviceDto } from './dto/auth-device.dto';
 
 @ApiTags('Device')
 @Controller('device')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(Role.ADMIN)
 export class DeviceController {
   constructor(private service: DeviceService) {}
 
@@ -35,6 +33,8 @@ export class DeviceController {
   @ApiResponse({ status: 400, description: 'Invalid body data' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   async create(@Body() dto: CreateDeviceDto) {
     return this.service.create(dto);
   }
@@ -53,8 +53,10 @@ export class DeviceController {
   @ApiResponse({ status: 400, description: 'Invalid query parameters' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get()
-  async getAll(@Query() query: QueryDeviceDto, @CurrentUser() user: JwtPayload) {
-    return this.service.getMany(query, user.userId);
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  async getAll(@Query() query: QueryDeviceDto) {
+    return this.service.getMany(query);
   }
 
   @ApiOperation({ summary: 'Get device by id' })
@@ -62,8 +64,10 @@ export class DeviceController {
   @ApiResponse({ status: 404, description: 'No such device' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get(':id')
-  async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
-    return this.service.getById(id, user.userId);
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  async getById(@Param('id') id: string) {
+    return this.service.getById(id);
   }
 
   @ApiOperation({ summary: 'Update device' })
@@ -72,8 +76,22 @@ export class DeviceController {
   @ApiResponse({ status: 404, description: 'No such device' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateDeviceDto, @CurrentUser() user: JwtPayload) {
-    return this.service.update(id, dto, user.userId);
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  async update(@Param('id') id: string, @Body() dto: UpdateDeviceDto) {
+    return this.service.update(id, dto);
+  }
+
+  @ApiOperation({ summary: 'Connect device to vehicle' })
+  @ApiResponse({ status: 200, description: 'Updated successfuly' })
+  @ApiResponse({ status: 400, description: 'Invalid body data' })
+  @ApiResponse({ status: 404, description: 'No such device or vehicle' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @Patch('connect/vehicle/:vehicleId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  async connectVehicle(@Param('vehicleId') vehicleId: string, @Body() dto: AuthDeviceDto, @CurrentUser() user: JwtPayload) {
+    return this.service.connectVehicle(vehicleId, dto, user.userId);
   }
 
   @ApiOperation({ summary: 'Delete device' })
@@ -81,7 +99,9 @@ export class DeviceController {
   @ApiResponse({ status: 404, description: 'No such device' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete(':id')
-  async delete(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
-    return this.service.delete(id, user.userId);
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  async delete(@Param('id') id: string) {
+    return this.service.delete(id);
   }
 }

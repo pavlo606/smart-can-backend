@@ -31,21 +31,21 @@ export class DeviceRepository {
     return this.prisma.device.count({ where });
   }
 
-  async getById(id: string, userId?: string) {
+  async getById(id: string) {
     return this.prisma.device.findUniqueOrThrow({
-      where: { id, vehicle: { userId } },
+      where: { id },
       ...deviceDetailsInclude
     });
   }
 
-  async update(id: string, data: Prisma.DeviceUpdateInput, userId: string) {
+  async update(id: string, data: Prisma.DeviceUpdateInput) {
     return this.prisma.device.update({
-      where: { id, vehicle: { userId } },
+      where: { id },
       data,
     });
   }
 
-  async delete(id: string, userId: string) {
-    return this.prisma.device.delete({ where: { id, vehicle: { userId } } });
+  async delete(id: string) {
+    return this.prisma.device.delete({ where: { id } });
   }
 }

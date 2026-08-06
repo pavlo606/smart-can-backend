@@ -21,8 +21,9 @@ export class CreateDeviceDto {
 
   @ApiProperty({ example: '' })
   @IsUUID()
+  @IsOptional()
   @EmptyStringToNull()
-  vehicleId!: string;
+  vehicleId?: string;
 
   @ApiProperty({ example: '0.0.1' })
   @IsString()

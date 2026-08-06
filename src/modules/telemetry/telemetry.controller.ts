@@ -12,6 +12,8 @@ import { DeleteManyDto } from './dto/delete-many-telemetry.dto';
 import { DeviceJwtAuthGuard } from '../device/guards/device-jwt.guard';
 import { CurrentDevice } from '@/common/decorators/current-device';
 import { type DeviceJwtPayload } from '../device/dto/device-jwt-payload.dto';
+import { CurrentUser } from '@/common/decorators/current-user';
+import { type JwtPayload } from '@/types/jwt-payload';
 
 @ApiTags('Telemetry')
 @Controller('telemetry')
@@ -47,8 +49,8 @@ export class TelemetryController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
-  async getAll(@Query() query: QueryTelemetryDto) {
-    return this.service.getMany(query);
+  async getAll(@Query() query: QueryTelemetryDto, @CurrentUser() user: JwtPayload) {
+    return this.service.getMany(query, user.userId);
   }
 
   @ApiOperation({ summary: 'Get telemetry by deviceId and timestamp' })
@@ -58,8 +60,8 @@ export class TelemetryController {
   @Get(':deviceId/:timestamp')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
-  async getById(@Param('deviceId') deviceId: string, @Param('timestamp') timestamp: string) {
-    return this.service.getUnique(deviceId, timestamp);
+  async getById(@Param('deviceId') deviceId: string, @Param('timestamp') timestamp: string, @CurrentUser() user: JwtPayload) {
+    return this.service.getUnique(deviceId, timestamp, user.userId);
   }
 
   @ApiOperation({ summary: 'Update telemetry' })
@@ -74,8 +76,9 @@ export class TelemetryController {
     @Param('deviceId') deviceId: string,
     @Param('timestamp') timestamp: string,
     @Body() dto: UpdateTelemetryDto,
+    @CurrentUser() user: JwtPayload
   ) {
-    return this.service.update(deviceId, timestamp, dto);
+    return this.service.update(deviceId, timestamp, dto, user.userId);
   }
 
   @ApiOperation({ summary: 'Delete telemetry' })
@@ -85,8 +88,8 @@ export class TelemetryController {
   @Delete(':deviceId/:timestamp')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
-  async delete(@Param('deviceId') deviceId: string, @Param('timestamp') timestamp: string) {
-    return this.service.delete(deviceId, timestamp);
+  async delete(@Param('deviceId') deviceId: string, @Param('timestamp') timestamp: string, @CurrentUser() user: JwtPayload) {
+    return this.service.delete(deviceId, timestamp, user.userId);
   }
 
   @ApiOperation({ summary: 'Delete many telemetry by deviceId and timeframe' })
@@ -94,9 +97,8 @@ export class TelemetryController {
   @ApiResponse({ status: 400, description: 'Invalid query params' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete('many')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.USER)
-  async deleteMany(@Query() query: DeleteManyDto) {
-    return this.service.deleteMany(query);
+  @UseGuards(DeviceJwtAuthGuard)
+  async deleteMany(@Query() query: DeleteManyDto, @CurrentUser() user: JwtPayload) {
+    return this.service.deleteMany(query, user.userId);
   }
 }

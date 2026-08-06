@@ -36,17 +36,16 @@ export class DeviceService {
     const valid = await bcrypt.compare(dto.secret, device.secretHash);
     if (!valid) throw new UnauthorizedException("Invalid credentials");
 
-    const tokens = await this.getToken(device.id);
+    const token = await this.getToken(device.id);
 
-    return tokens;
+    return { accessToken: token };
   }
 
-  async getMany(query: QueryDeviceDto, userId: string) {
+  async getMany(query: QueryDeviceDto) {
     const where: Prisma.DeviceWhereInput = {
       ...(query.search && {
         OR: [{ imei: { contains: query.search } }],
       }),
-      vehicle: { userId },
     };
 
     const skip = (query.page - 1) * query.limit;
@@ -74,18 +73,29 @@ export class DeviceService {
     );
   }
 
-  async getById(id: string, userId: string) {
-    const res = await this.repo.getById(id, userId);
+  async getById(id: string) {
+    const res = await this.repo.getById(id);
     return this.mapper.toDetails(res);
   }
 
-  async update(id: string, data: UpdateDeviceDto, userId: string) {
-    const res = await this.repo.update(id, data, userId);
+  async update(id: string, data: UpdateDeviceDto) {
+    const res = await this.repo.update(id, data);
     return this.mapper.toBaseResponse(res);
   }
 
-  async delete(id: string, userId: string) {
-    const res = await this.repo.delete(id, userId);
+  async connectVehicle(vehicleId: string, dto: AuthDeviceDto, userId: string) {
+    const device = await this.repo.getById(dto.deviceId);
+    if (!device) throw new UnauthorizedException("User not found");
+
+    const valid = await bcrypt.compare(dto.secret, device.secretHash);
+    if (!valid) throw new UnauthorizedException("Invalid credentials");
+
+    const res = await this.repo.update(dto.deviceId, { vehicle: { connect: { id: vehicleId } } });
+    return this.mapper.toBaseResponse(res);
+  }
+
+  async delete(id: string) {
+    const res = await this.repo.delete(id);
     return this.mapper.toBaseResponse(res);
   }
 

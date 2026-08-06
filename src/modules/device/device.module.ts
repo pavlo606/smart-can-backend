@@ -16,6 +16,7 @@ import { JwtModule } from '@nestjs/jwt';
     }),
   ],
   controllers: [DeviceController],
-  providers: [DeviceService, DeviceRepository, DeviceMapper, DeviceJwtStrategy]
+  providers: [DeviceService, DeviceRepository, DeviceMapper, DeviceJwtStrategy],
+  exports: [DeviceService]
 })
 export class DeviceModule {}

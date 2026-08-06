@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { TelemetryRepository } from './telemetry.repository';
 import { CreateTelemetryDto, CreateTelemetryManyDto } from './dto/create-telemetry.dto';
 import { UpdateTelemetryDto } from './dto/update-telemetry.dto';
@@ -7,12 +7,14 @@ import { Prisma } from '@/generated/prisma/client';
 import { TelemetryMapper } from './mappers/telemetry.mapper';
 import { PaginatedMapper } from '@/common/mappers/paginated.mapper';
 import { DeleteManyDto } from './dto/delete-many-telemetry.dto';
+import { DeviceService } from '../device/device.service';
 
 @Injectable()
 export class TelemetryService {
   constructor(
     private readonly repo: TelemetryRepository,
     private readonly mapper: TelemetryMapper,
+    private readonly deviceService: DeviceService,
   ) {}
 
   async create(dto: CreateTelemetryDto, deviceId: string) {
@@ -28,7 +30,10 @@ export class TelemetryService {
     return res;
   }
 
-  async getMany(query: QueryTelemetryDto) {
+  async getMany(query: QueryTelemetryDto, userId: string) {
+    const device = await this.deviceService.getById(query.deviceId)
+    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+
     const where: Prisma.TelemetryWhereInput = {
       deviceId: query.deviceId,
       timestamp: {
@@ -58,22 +63,34 @@ export class TelemetryService {
     );
   }
 
-  async getUnique(deviceId: string, timestamp: string) {
+  async getUnique(deviceId: string, timestamp: string, userId: string) {
+    const device = await this.deviceService.getById(deviceId)
+    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+
     const res = await this.repo.getUnique(deviceId, timestamp);
     return this.mapper.toBaseResponse(res);
   }
 
-  async update(deviceId: string, timestamp: string, data: UpdateTelemetryDto) {
+  async update(deviceId: string, timestamp: string, data: UpdateTelemetryDto, userId: string) {
+    const device = await this.deviceService.getById(deviceId)
+    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+
     const res = await this.repo.update(deviceId, timestamp, data);
     return this.mapper.toBaseResponse(res);
   }
 
-  async delete(deviceId: string, timestamp: string) {
+  async delete(deviceId: string, timestamp: string, userId: string) {
+    const device = await this.deviceService.getById(deviceId)
+    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+
     const res = await this.repo.delete(deviceId, timestamp);
     return this.mapper.toBaseResponse(res);
   }
 
-  async deleteMany(query: DeleteManyDto) {
+  async deleteMany(query: DeleteManyDto, userId: string) {
+    const device = await this.deviceService.getById(query.deviceId)
+    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+  
     return this.repo.deleteMany(query.deviceId, query.gte, query.lte)
   }
 }
