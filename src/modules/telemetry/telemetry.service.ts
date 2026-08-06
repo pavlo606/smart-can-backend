@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { TelemetryRepository } from './telemetry.repository';
-import { CreateTelemetryDto } from './dto/create-telemetry.dto';
+import { CreateTelemetryDto, CreateTelemetryManyDto } from './dto/create-telemetry.dto';
 import { UpdateTelemetryDto } from './dto/update-telemetry.dto';
 import { QueryTelemetryDto } from './dto/query-telemetry.dto';
 import { Prisma } from '@/generated/prisma/client';
 import { TelemetryMapper } from './mappers/telemetry.mapper';
 import { PaginatedMapper } from '@/common/mappers/paginated.mapper';
+import { DeleteManyDto } from './dto/delete-many-telemetry.dto';
 
 @Injectable()
 export class TelemetryService {
@@ -19,6 +20,12 @@ export class TelemetryService {
       ...dto,
     });
     return this.mapper.toBaseResponse(res);
+  }
+
+  async createMany(dto: CreateTelemetryManyDto) {
+    console.log(dto.items)
+    const res = await this.repo.createMany(dto.items);
+    return res;
   }
 
   async getMany(query: QueryTelemetryDto) {
@@ -64,5 +71,9 @@ export class TelemetryService {
   async delete(deviceId: string, timestamp: string) {
     const res = await this.repo.delete(deviceId, timestamp);
     return this.mapper.toBaseResponse(res);
+  }
+
+  async deleteMany(query: DeleteManyDto) {
+    return this.repo.deleteMany(query.deviceId, query.gte, query.lte)
   }
 }

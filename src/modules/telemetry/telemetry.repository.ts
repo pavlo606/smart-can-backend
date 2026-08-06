@@ -10,6 +10,11 @@ export class TelemetryRepository {
     return this.prisma.telemetry.create({ data });
   }
 
+  async createMany(data: Prisma.TelemetryCreateManyInput[]) {
+    console.log(data)
+    return this.prisma.telemetry.createMany({ data });
+  }
+
   async getMany(
     where: Prisma.TelemetryWhereInput,
     orderBy: Prisma.TelemetryOrderByWithAggregationInput,
@@ -51,6 +56,18 @@ export class TelemetryRepository {
     return this.prisma.telemetry.delete({
       where: {
         deviceId_timestamp: { deviceId, timestamp },
+      },
+    });
+  }
+
+  async deleteMany(deviceId: string, gte: string, lte: string) {
+    return this.prisma.telemetry.deleteMany({
+      where: {
+        deviceId, 
+        timestamp: {
+          gte,
+          lte,
+        },
       },
     });
   }

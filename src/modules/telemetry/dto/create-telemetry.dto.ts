@@ -1,6 +1,7 @@
 import { EmptyStringToNull } from '@/common/decorators/empty-string-to-null';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsLatitude, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ArrayMinSize, IsArray, IsDateString, IsLatitude, IsNumber, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
 
 export class CreateTelemetryDto {
   @ApiProperty({ example: '' })
@@ -42,4 +43,13 @@ export class CreateTelemetryDto {
   @IsOptional()
   @IsNumber()
   fuelLevel?: number;
+}
+
+export class CreateTelemetryManyDto {
+  @ApiProperty({ type: [CreateTelemetryDto] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => CreateTelemetryDto)
+  items!: CreateTelemetryDto[];
 }
