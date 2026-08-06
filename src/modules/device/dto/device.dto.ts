@@ -1,7 +1,7 @@
 export class DeviceDto {
-  id!: string
+  id!: string;
   imei!: string;
-  vehicleId!: string;
+  vehicleId!: string | null;
   firmwareVersion!: string;
   createdAt!: string;
   updatedAt!: string;

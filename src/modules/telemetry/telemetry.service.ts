@@ -15,16 +15,16 @@ export class TelemetryService {
     private readonly mapper: TelemetryMapper,
   ) {}
 
-  async create(dto: CreateTelemetryDto) {
+  async create(dto: CreateTelemetryDto, deviceId: string) {
     const res = await this.repo.create({
       ...dto,
+      deviceId,
     });
     return this.mapper.toBaseResponse(res);
   }
 
-  async createMany(dto: CreateTelemetryManyDto) {
-    console.log(dto.items)
-    const res = await this.repo.createMany(dto.items);
+  async createMany(dto: CreateTelemetryManyDto, deviceId: string) {
+    const res = await this.repo.createMany(dto.items.map((item) => ({...item, deviceId})));
     return res;
   }
 
@@ -39,7 +39,7 @@ export class TelemetryService {
     };
 
     const orderBy: Prisma.TelemetryOrderByWithRelationInput = {
-      timestamp: 'desc',
+      timestamp: 'asc',
     };
 
     const [items, total] = await Promise.all([this.repo.getMany(where, orderBy, query.limit), this.repo.count(where)]);

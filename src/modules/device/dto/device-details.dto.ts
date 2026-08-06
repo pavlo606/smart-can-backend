@@ -3,6 +3,6 @@ import { DeviceDto } from "./device.dto";
 import { TrackDto } from "@/modules/track/dto/track.dto";
 
 export class DeviceDetailsDto extends DeviceDto {
-  vehicle!: VehicleDto;
+  vehicle?: VehicleDto;
   tracks!: TrackDto[];
 }

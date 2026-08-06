@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TelemetryService } from './telemetry.service';
 import { CreateTelemetryDto, CreateTelemetryManyDto } from './dto/create-telemetry.dto';
 import { UpdateTelemetryDto } from './dto/update-telemetry.dto';
@@ -9,30 +9,35 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.enum';
 import { DeleteManyDto } from './dto/delete-many-telemetry.dto';
+import { DeviceJwtAuthGuard } from '../device/guards/device-jwt.guard';
+import { CurrentDevice } from '@/common/decorators/current-device';
+import { type DeviceJwtPayload } from '../device/dto/device-jwt-payload.dto';
 
 @ApiTags('Telemetry')
 @Controller('telemetry')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(Role.ADMIN, Role.USER)
 export class TelemetryController {
   constructor(private service: TelemetryService) {}
 
+  @ApiBearerAuth('device-auth')
   @ApiOperation({ summary: 'Create telemetry' })
   @ApiResponse({ status: 201, description: 'Returns created telemetry data' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post()
-  async create(@Body() dto: CreateTelemetryDto) {
-    return this.service.create(dto);
+  @UseGuards(DeviceJwtAuthGuard)
+  async create(@CurrentDevice() device: DeviceJwtPayload, @Body() dto: CreateTelemetryDto) {
+    return this.service.create(dto, device.deviceId);
   }
-
+  
+  @ApiBearerAuth('device-auth')
   @ApiOperation({ summary: 'Create many telemetry' })
   @ApiResponse({ status: 201, description: 'Returns created telemetry data' })
   @ApiResponse({ status: 400, description: 'Invalid body data' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post("many")
-  async createMany(@Body() dto: CreateTelemetryManyDto) {
-    return this.service.createMany(dto)
+  @UseGuards(DeviceJwtAuthGuard)
+  async createMany(@CurrentDevice() device: DeviceJwtPayload, @Body() dto: CreateTelemetryManyDto) {
+    return this.service.createMany(dto, device.deviceId)
   }
 
   @ApiOperation({ summary: 'Get many telemetries within deviceId and timeframe' })
@@ -40,6 +45,8 @@ export class TelemetryController {
   @ApiResponse({ status: 400, description: 'Invalid query params' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.USER)
   async getAll(@Query() query: QueryTelemetryDto) {
     return this.service.getMany(query);
   }
@@ -49,6 +56,8 @@ export class TelemetryController {
   @ApiResponse({ status: 404, description: 'No such telemetry' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get(':deviceId/:timestamp')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.USER)
   async getById(@Param('deviceId') deviceId: string, @Param('timestamp') timestamp: string) {
     return this.service.getUnique(deviceId, timestamp);
   }
@@ -59,6 +68,8 @@ export class TelemetryController {
   @ApiResponse({ status: 404, description: 'No such telemetry' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Patch(':deviceId/:timestamp')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.USER)
   async update(
     @Param('deviceId') deviceId: string,
     @Param('timestamp') timestamp: string,
@@ -72,6 +83,8 @@ export class TelemetryController {
   @ApiResponse({ status: 404, description: 'No such telemetry' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete(':deviceId/:timestamp')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.USER)
   async delete(@Param('deviceId') deviceId: string, @Param('timestamp') timestamp: string) {
     return this.service.delete(deviceId, timestamp);
   }
@@ -81,6 +94,8 @@ export class TelemetryController {
   @ApiResponse({ status: 400, description: 'Invalid query params' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete('many')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.USER)
   async deleteMany(@Query() query: DeleteManyDto) {
     return this.service.deleteMany(query);
   }

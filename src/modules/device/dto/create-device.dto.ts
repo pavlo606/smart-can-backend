@@ -1,12 +1,23 @@
 import { EmptyStringToNull } from '@/common/decorators/empty-string-to-null';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateDeviceDto {
+  @ApiProperty({ example: 'abc123' })
+  @IsOptional()
+  @IsString()
+  @EmptyStringToNull()
+  id?: string;
+
   @ApiProperty({ example: 'abc123' })
   @IsString()
   @EmptyStringToNull()
   imei!: string;
+
+  @ApiProperty({ example: 'abc123' })
+  @IsString()
+  @EmptyStringToNull()
+  secret!: string;
 
   @ApiProperty({ example: '' })
   @IsUUID()

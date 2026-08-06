@@ -59,15 +59,25 @@ model Vehicle {
 
 model Device {
   id              String   @id @default(uuid())
+  secretHash      String
+  
   imei            String
-  vehicleId       String   @unique @map("vehicle_id")
   firmwareVersion String   @map("firmware_version")
-  vehicle         Vehicle  @relation(fields: [vehicleId], references: [id])
+  
+  vehicleId       String?   @unique @map("vehicle_id")
+  vehicle         Vehicle?  @relation(fields: [vehicleId], references: [id])
   tracks          Track[]
+
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   @@map("devices")
+}
+
+enum DeviceStatus {
+  AVAILABLE
+  ACTIVE
+  DISABLED
 }
 
 model Telemetry {
@@ -174,4 +184,6 @@ model VehicleState {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("vehicle_state")
 }

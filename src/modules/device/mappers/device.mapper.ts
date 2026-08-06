@@ -24,7 +24,7 @@ export class DeviceMapper extends BaseMapper<Device, DeviceDto> {
     return {
       ...this.toBaseResponse(entity),
 
-      vehicle: {
+      vehicle: entity.vehicle ? {
         id: entity.vehicle.id,
         name: entity.vehicle.name,
         userId: entity.vehicle.userId,
@@ -36,7 +36,7 @@ export class DeviceMapper extends BaseMapper<Device, DeviceDto> {
         trackerDistance: entity.vehicle.trackerDistance,
         createdAt: entity.vehicle.createdAt.toISOString(),
         updatedAt: entity.vehicle.updatedAt.toISOString(),
-      },
+      } : undefined,
     };
   }
 
@@ -44,7 +44,7 @@ export class DeviceMapper extends BaseMapper<Device, DeviceDto> {
     return {
       ...this.toBaseResponse(entity),
 
-      vehicle: {
+      vehicle: entity.vehicle ? {
         id: entity.vehicle.id,
         name: entity.vehicle.name,
         userId: entity.vehicle.userId,
@@ -56,7 +56,7 @@ export class DeviceMapper extends BaseMapper<Device, DeviceDto> {
         trackerDistance: entity.vehicle.trackerDistance,
         createdAt: entity.vehicle.createdAt.toISOString(),
         updatedAt: entity.vehicle.updatedAt.toISOString(),
-      },
+      } : undefined,
 
       tracks: entity.tracks.map((track) => ({
         id: track.id,

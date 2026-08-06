@@ -21,11 +21,12 @@ import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.enum';
 import { CurrentUser } from '@/common/decorators/current-user';
 import type { JwtPayload } from '@/types/jwt-payload';
+import { AuthDeviceDto } from './dto/auth-device.dto';
 
 @ApiTags('Device')
 @Controller('device')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(Role.ADMIN, Role.USER)
+@Roles(Role.ADMIN)
 export class DeviceController {
   constructor(private service: DeviceService) {}
 
@@ -36,6 +37,15 @@ export class DeviceController {
   @Post()
   async create(@Body() dto: CreateDeviceDto) {
     return this.service.create(dto);
+  }
+
+  @ApiOperation({ summary: 'Log in device and return access token' })
+  @ApiResponse({ status: 201, description: 'Returns access token' })
+  @ApiResponse({ status: 400, description: 'Invalid body data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @Post("auth")
+  async auth(@Body() dto: AuthDeviceDto) {
+    return this.service.auth(dto);
   }
 
   @ApiOperation({ summary: 'Get many devices with search and pagination' })

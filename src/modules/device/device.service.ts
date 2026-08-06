@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import * as bcrypt from "bcrypt";
 import { DeviceRepository } from './device.repository';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
@@ -6,19 +7,38 @@ import { QueryDeviceDto } from './dto/query-device.dto';
 import { Prisma } from '@/generated/prisma/client';
 import { DeviceMapper } from './mappers/device.mapper';
 import { PaginatedMapper } from '@/common/mappers/paginated.mapper';
+import { JwtService } from '@nestjs/jwt';
+import { AuthDeviceDto } from './dto/auth-device.dto';
 
 @Injectable()
 export class DeviceService {
   constructor(
     private readonly repo: DeviceRepository,
     private readonly mapper: DeviceMapper,
+    private readonly jwtService: JwtService,
   ) {}
 
   async create(dto: CreateDeviceDto) {
+    const { secret, ...data } = dto
+    const secretHash = await bcrypt.hash(secret, 10)
+    
     const res = await this.repo.create({
-      ...dto,
+      ...data,
+      secretHash,
     });
     return this.mapper.toBaseResponse(res);
+  }
+
+  async auth(dto: AuthDeviceDto) {
+    const device = await this.repo.getById(dto.deviceId);
+    if (!device) throw new UnauthorizedException("User not found");
+
+    const valid = await bcrypt.compare(dto.secret, device.secretHash);
+    if (!valid) throw new UnauthorizedException("Invalid credentials");
+
+    const tokens = await this.getToken(device.id);
+
+    return tokens;
   }
 
   async getMany(query: QueryDeviceDto, userId: string) {
@@ -67,5 +87,17 @@ export class DeviceService {
   async delete(id: string, userId: string) {
     const res = await this.repo.delete(id, userId);
     return this.mapper.toBaseResponse(res);
+  }
+
+  private async getToken(deviceId: string) {
+    const payload = {
+      sub: deviceId,
+      jti: crypto.randomUUID(),
+    }
+    const accessToken = await this.jwtService.signAsync(payload, {
+        expiresIn: "60m",
+        secret: process.env.JWT_SECRET || 'super-secret',
+    });
+    return accessToken
   }
 }

@@ -31,7 +31,7 @@ export class DeviceRepository {
     return this.prisma.device.count({ where });
   }
 
-  async getById(id: string, userId: string) {
+  async getById(id: string, userId?: string) {
     return this.prisma.device.findUniqueOrThrow({
       where: { id, vehicle: { userId } },
       ...deviceDetailsInclude

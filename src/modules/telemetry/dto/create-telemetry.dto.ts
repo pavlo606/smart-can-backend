@@ -4,11 +4,6 @@ import { Type } from 'class-transformer';
 import { ArrayMinSize, IsArray, IsDateString, IsLatitude, IsNumber, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
 
 export class CreateTelemetryDto {
-  @ApiProperty({ example: '' })
-  @IsUUID()
-  @EmptyStringToNull()
-  deviceId!: string;
-
   @ApiProperty({ example: '2023-10-25T14:30:00Z' })
   @IsDateString()
   @EmptyStringToNull()

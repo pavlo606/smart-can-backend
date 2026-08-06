@@ -8,12 +8,16 @@ import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter'
 import { ResponseLoggerInterceptor } from './common/interceptors/response-logger.interseptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { Logger as PinoLogger } from 'nestjs-pino';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    bufferLogs: true,
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true
   });
+
+  app.useBodyParser('json', { limit: '50mb' });
+  app.useBodyParser('urlencoded', { limit: '50mb', extended: true });
 
   app.enableCors({
     origin: ['http://localhost:5173'],
@@ -42,6 +46,17 @@ async function bootstrap() {
     .setTitle('Solar HUB API')
     .setDescription('API documentation for Solar Hub')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'device-auth'
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, documentFactory);
