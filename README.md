@@ -3,7 +3,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue)](https://www.postgresql.org/)
 [![TimescaleDB](https://img.shields.io/badge/TimescaleDB-TimeSeries-green)](https://timescaledb.org/)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-blue)](https://www.docker.com/)
-[License](https://img.shields.io/badge/License-MIT-lightgrey)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 # OBD-II Vehicle Tracker Backend
 
 Backend API for an OBD-II vehicle tracking system built with **NestJS**, **Prisma**, **PostgreSQL**, and **TimescaleDB**.
