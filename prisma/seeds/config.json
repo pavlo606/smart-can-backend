@@ -1,0 +1,8 @@
+{
+  "admin": {
+    "email": "temp.admin@example.com",
+    "username": "Temp Admin",
+    "role": "ADMIN",
+    "password": "StrongPass123"
+  }
+}
