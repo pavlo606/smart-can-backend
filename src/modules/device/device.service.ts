@@ -4,11 +4,12 @@ import { DeviceRepository } from './device.repository';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { QueryDeviceDto } from './dto/query-device.dto';
-import { DeviceStatus, Prisma } from '@/generated/prisma/client';
+import { DeviceStatus, Prisma, Role } from '@/generated/prisma/client';
 import { DeviceMapper } from './mappers/device.mapper';
 import { PaginatedMapper } from '@/common/mappers/paginated.mapper';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDeviceDto } from './dto/auth-device.dto';
+import { JwtPayload } from '@/types/jwt-payload';
 
 @Injectable()
 export class DeviceService {
@@ -73,8 +74,11 @@ export class DeviceService {
     );
   }
 
-  async getById(id: string) {
+  async getById(id: string, user: JwtPayload) {
     const res = await this.repo.getById(id);
+    if (user.role !== Role.ADMIN && res.vehicle?.userId !== user.userId) {
+      throw new ForbiddenException("You do not have permission")
+    }
     return this.mapper.toDetails(res);
   }
 

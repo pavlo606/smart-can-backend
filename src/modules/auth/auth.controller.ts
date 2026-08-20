@@ -17,6 +17,7 @@ import { LoginDto } from './dto/login.dto';
 import { ChangePassordDto as ChangePasswordDto } from './dto/changePassword.dto';
 import { CurrentUser } from '@/common/decorators/current-user';
 import type { JwtPayload } from '@/types/jwt-payload';
+import { Role } from './roles/roles.enum';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -36,7 +37,7 @@ export class AuthController {
       dto.username,
       dto.email,
       dto.password,
-      dto.role,
+      Role.USER,
     );
 
     res.cookie('refreshToken', tokens.refreshToken, {

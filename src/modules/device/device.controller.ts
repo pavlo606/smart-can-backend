@@ -65,9 +65,9 @@ export class DeviceController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
-  async getById(@Param('id') id: string) {
-    return this.service.getById(id);
+  @Roles(Role.ADMIN, Role.USER)
+  async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.service.getById(id, user);
   }
 
   @ApiOperation({ summary: 'Update device' })
