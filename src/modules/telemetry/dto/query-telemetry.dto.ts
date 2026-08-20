@@ -20,7 +20,6 @@ export class QueryTelemetryDto {
   @IsDateString()
   gte!: string
 
-  
   @ApiProperty({
     type: String,
     description: 'End date string',
@@ -39,7 +38,7 @@ export class QueryTelemetryDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  limit = 20000;
+  limit = 100000;
   
   @ApiPropertyOptional({
     type: String,

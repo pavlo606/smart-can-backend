@@ -32,7 +32,7 @@ export class TelemetryService {
 
   async getMany(query: QueryTelemetryDto, userId: string) {
     const device = await this.deviceService.getById(query.deviceId)
-    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+    if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
 
     const where: Prisma.TelemetryWhereInput = {
       deviceId: query.deviceId,
@@ -65,7 +65,7 @@ export class TelemetryService {
 
   async getUnique(deviceId: string, timestamp: string, userId: string) {
     const device = await this.deviceService.getById(deviceId)
-    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+    if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
 
     const res = await this.repo.getUnique(deviceId, timestamp);
     return this.mapper.toBaseResponse(res);
@@ -73,7 +73,7 @@ export class TelemetryService {
 
   async update(deviceId: string, timestamp: string, data: UpdateTelemetryDto, userId: string) {
     const device = await this.deviceService.getById(deviceId)
-    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+    if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
 
     const res = await this.repo.update(deviceId, timestamp, data);
     return this.mapper.toBaseResponse(res);
@@ -81,7 +81,7 @@ export class TelemetryService {
 
   async delete(deviceId: string, timestamp: string, userId: string) {
     const device = await this.deviceService.getById(deviceId)
-    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+    if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
 
     const res = await this.repo.delete(deviceId, timestamp);
     return this.mapper.toBaseResponse(res);
@@ -89,7 +89,7 @@ export class TelemetryService {
 
   async deleteMany(query: DeleteManyDto, userId: string) {
     const device = await this.deviceService.getById(query.deviceId)
-    if (device.vehicle?.id !== userId) throw new NotFoundException("No such aviable device")
+    if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
   
     return this.repo.deleteMany(query.deviceId, query.gte, query.lte)
   }

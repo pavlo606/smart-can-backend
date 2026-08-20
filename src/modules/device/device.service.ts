@@ -1,10 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from "bcrypt";
 import { DeviceRepository } from './device.repository';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { QueryDeviceDto } from './dto/query-device.dto';
-import { Prisma } from '@/generated/prisma/client';
+import { DeviceStatus, Prisma } from '@/generated/prisma/client';
 import { DeviceMapper } from './mappers/device.mapper';
 import { PaginatedMapper } from '@/common/mappers/paginated.mapper';
 import { JwtService } from '@nestjs/jwt';
@@ -86,6 +86,8 @@ export class DeviceService {
   async connectVehicle(vehicleId: string, dto: AuthDeviceDto, userId: string) {
     const device = await this.repo.getById(dto.deviceId);
     if (!device) throw new UnauthorizedException("User not found");
+
+    if (device.status !== DeviceStatus.AVAILABLE) throw new ForbiddenException("Device is not available")
 
     const valid = await bcrypt.compare(dto.secret, device.secretHash);
     if (!valid) throw new UnauthorizedException("Invalid credentials");

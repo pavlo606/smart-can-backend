@@ -97,7 +97,8 @@ export class TelemetryController {
   @ApiResponse({ status: 400, description: 'Invalid query params' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Delete('many')
-  @UseGuards(DeviceJwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.USER)
   async deleteMany(@Query() query: DeleteManyDto, @CurrentUser() user: JwtPayload) {
     return this.service.deleteMany(query, user.userId);
   }

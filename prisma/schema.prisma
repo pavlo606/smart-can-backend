@@ -63,6 +63,8 @@ model Device {
   
   imei            String
   firmwareVersion String   @map("firmware_version")
+
+  status          DeviceStatus @default(AVAILABLE)
   
   vehicleId       String?   @unique @map("vehicle_id")
   vehicle         Vehicle?  @relation(fields: [vehicleId], references: [id])
