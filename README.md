@@ -1,9 +1,9 @@
-![NestJS](https://img.shields.io/badge/NestJS-v11-red)
-![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue)
-![TimescaleDB](https://img.shields.io/badge/TimescaleDB-TimeSeries-green)
-![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+[![NestJS](https://img.shields.io/badge/NestJS-v11-red)](https://nestjs.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue)](https://www.postgresql.org/)
+[![TimescaleDB](https://img.shields.io/badge/TimescaleDB-TimeSeries-green)](https://timescaledb.org/)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-blue)](https://www.docker.com/)
+[License](https://img.shields.io/badge/License-MIT-lightgrey)
 # OBD-II Vehicle Tracker Backend
 
 Backend API for an OBD-II vehicle tracking system built with **NestJS**, **Prisma**, **PostgreSQL**, and **TimescaleDB**.
@@ -328,7 +328,7 @@ Simply run services, and the server will be aviable at `localhost:3000`
 ```bash
 git clone https://github.com/pavlo606/smart-can-backend.git
 
-cd backend
+cd smart-can-backend
 
 npm install
 
@@ -344,7 +344,7 @@ To run locally you need to run the `db` service, but you need to shut down the `
 ```bash
 git clone https://github.com/pavlo606/smart-can-backend.git
 
-cd backend
+cd smart-can-backend
 
 npm install
 
@@ -384,19 +384,22 @@ npm run setup:timescale    # Configure TimescaleDB hypertables
 - Unit & Integration tests
 - Metrics and monitoring
 
-# Demo
+# Frontend
 
 Frontend repository:
 
 > https://github.com/pavlo606/smart-can-frontend
 
+# Demo
+
 Live demo:
 
 > https://smart-can-frontend-production.up.railway.app/
 
-Swagger documentation:
+Swagger documentation for API:
 
 > https://smart-can-backend-production.up.railway.app/api/docs
+
 # License
 
 This project was developed as a Bachelor's degree project.
