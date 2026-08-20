@@ -67,7 +67,7 @@ export class DeviceController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.USER)
   async getById(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
-    return this.service.getById(id, user);
+    return this.service.getById(id, user.userId, user.role);
   }
 
   @ApiOperation({ summary: 'Update device' })

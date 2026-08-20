@@ -74,9 +74,9 @@ export class DeviceService {
     );
   }
 
-  async getById(id: string, user: JwtPayload) {
+  async getById(id: string, userId: string, role?: string) {
     const res = await this.repo.getById(id);
-    if (user.role !== Role.ADMIN && res.vehicle?.userId !== user.userId) {
+    if (role !== Role.ADMIN && res.vehicle?.userId !== userId) {
       throw new ForbiddenException("You do not have permission")
     }
     return this.mapper.toDetails(res);

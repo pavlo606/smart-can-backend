@@ -31,7 +31,7 @@ export class TelemetryService {
   }
 
   async getMany(query: QueryTelemetryDto, userId: string) {
-    const device = await this.deviceService.getById(query.deviceId)
+    const device = await this.deviceService.getById(query.deviceId, userId)
     if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
 
     const where: Prisma.TelemetryWhereInput = {
@@ -64,7 +64,7 @@ export class TelemetryService {
   }
 
   async getUnique(deviceId: string, timestamp: string, userId: string) {
-    const device = await this.deviceService.getById(deviceId)
+    const device = await this.deviceService.getById(deviceId, userId)
     if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
 
     const res = await this.repo.getUnique(deviceId, timestamp);
@@ -72,7 +72,7 @@ export class TelemetryService {
   }
 
   async update(deviceId: string, timestamp: string, data: UpdateTelemetryDto, userId: string) {
-    const device = await this.deviceService.getById(deviceId)
+    const device = await this.deviceService.getById(deviceId, userId)
     if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
 
     const res = await this.repo.update(deviceId, timestamp, data);
@@ -80,7 +80,7 @@ export class TelemetryService {
   }
 
   async delete(deviceId: string, timestamp: string, userId: string) {
-    const device = await this.deviceService.getById(deviceId)
+    const device = await this.deviceService.getById(deviceId, userId)
     if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
 
     const res = await this.repo.delete(deviceId, timestamp);
@@ -88,7 +88,7 @@ export class TelemetryService {
   }
 
   async deleteMany(query: DeleteManyDto, userId: string) {
-    const device = await this.deviceService.getById(query.deviceId)
+    const device = await this.deviceService.getById(query.deviceId, userId)
     if (device.vehicle?.userId !== userId) throw new NotFoundException("No such aviable device")
   
     return this.repo.deleteMany(query.deviceId, query.gte, query.lte)
